@@ -48,6 +48,7 @@ const SignUpPage = () => {
               </div>
               <h1 className="text-2xl font-bold mt-2">Create Account</h1>
               <p className="text-base-content/60">Get started with your free account</p>
+              <p className="text-[14px] text-red-400">** Name & Email cannot be changed later. Choose wisely. **</p>
             </div>
           </div>
 
@@ -142,7 +143,7 @@ const SignUpPage = () => {
 
       <AuthImagePattern
         title="Join our community"
-        subtitle="Connect with friends, share moments, and stay in touch with your loved ones."
+        subtitle="Connect with friends, share moments, and stay in touch with your classmates."
       />
     </div>
   );
