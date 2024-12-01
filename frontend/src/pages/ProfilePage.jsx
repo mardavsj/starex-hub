@@ -5,7 +5,7 @@ import { Camera, Mail, User } from "lucide-react";
 const ProfilePage = () => {
 
   useEffect(() => {
-    document.title = 'Starex HUB - Profile Page';
+    document.title = 'Personalize Your Avatar - Starex Hub Profile';
   }, []);
 
   const { authUser, isUpdatingProfile, updateProfile } = useAuthStore();

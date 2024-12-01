@@ -12,7 +12,7 @@ const SettingsPage = () => {
   const { theme, setTheme } = useThemeStore();
 
   useEffect(() => {
-    document.title = 'Starex HUB - Themes Page';
+    document.title = 'Choose Your Theme - Customize your Starex Hub';
   }, []);
 
   return (
@@ -39,6 +39,7 @@ const SettingsPage = () => {
                   <div className="rounded bg-secondary"></div>
                   <div className="rounded bg-accent"></div>
                   <div className="rounded bg-neutral"></div>
+                  <div className="rounded bg-base-100"></div>
                 </div>
               </div>
               <span className="text-[11px] font-medium truncate w-full text-center">

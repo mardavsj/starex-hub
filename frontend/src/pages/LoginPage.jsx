@@ -18,7 +18,7 @@ const LoginPage = () => {
   };
 
   useEffect(() => {
-    document.title = 'Starex HUB | Login';
+    document.title = 'Access Your Account - Login Page Starex Hub';
   }, []);
 
   return (

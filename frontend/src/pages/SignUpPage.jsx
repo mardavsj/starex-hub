@@ -35,7 +35,7 @@ const SignUpPage = () => {
   };
 
   useEffect(() => {
-    document.title = 'Starex HUB | Signup';
+    document.title = 'Create Your Account - Join Starex Hub';
   }, []);
 
   return (

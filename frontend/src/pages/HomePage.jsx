@@ -3,7 +3,7 @@ import { useEffect } from "react";
 const HomePage = () => {
 
   useEffect(() => {
-    document.title = 'Starex HUB - Home';
+    document.title = 'Starex Hub';
   }, []);
 
   return (

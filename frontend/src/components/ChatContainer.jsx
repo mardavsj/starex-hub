@@ -36,6 +36,14 @@ const ChatContainer = () => {
     )
   }
 
+  const getSenderClasses = () => {
+    return 'bg-primary text-primary-content';
+  };
+
+  const getRecipientClasses = () => {
+    return 'bg-base-200 text-base-content';
+  };
+
   return (
     <div className="flex-1 flex flex-col overflow-auto">
       <ChatHeader/>
@@ -64,7 +72,14 @@ const ChatContainer = () => {
                 {formatMessageTime(message.createdAt)}
               </time>
             </div>
-            <div className="chat-bubble flex flex-col">
+            <div className={`chat-bubble flex flex-col p-3 rounded-lg ${
+                message.senderId === authUser._id
+                  ? getSenderClasses()
+                  : getRecipientClasses()
+              } ${message.senderId === authUser._id
+              ? "bg-primary text-base-100"
+                : "bg-base-200 text-base-content"
+              }`}>
               {message.image && (
                 <img
                   src={message.image}

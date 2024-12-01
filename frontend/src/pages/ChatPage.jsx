@@ -7,7 +7,7 @@ import ChatContainer from "../components/ChatContainer";
 const ChatPage = () => {
 
     useEffect(() => {
-        document.title = 'Starex HUB - My Chats';
+        document.title = 'Your Chats - Stay Connected on Starex Hub';
     }, []);
 
     const { selectedUser } = useChatStore();
