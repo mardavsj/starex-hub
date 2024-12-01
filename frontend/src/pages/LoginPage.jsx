@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import AuthImagePattern from "../components/AuthImagePattern";
 import { Link } from "react-router-dom";
@@ -16,6 +16,10 @@ const LoginPage = () => {
     e.preventDefault();
     login(formData);
   };
+
+  useEffect(() => {
+    document.title = 'Starex HUB | Login';
+  }, []);
 
   return (
     <div className="h-screen grid lg:grid-cols-2">

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import { Eye, EyeOff, Loader2, Lock, Mail, MessageSquare, User } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -33,6 +33,10 @@ const SignUpPage = () => {
 
     if (success === true) signup(formData);
   };
+
+  useEffect(() => {
+    document.title = 'Starex HUB | Signup';
+  }, []);
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2">

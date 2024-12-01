@@ -24,8 +24,20 @@ const Navbar = () => {
               <span className="hidden sm:inline">Themes</span>
             </Link>
 
+            {!authUser && (
+              <Link to={"/login"} className={`btn btn-sm gap-2 transition-colors`}>
+                <User className="w-4 h-4" />
+                <span className="hidden sm:inline">Login</span>
+              </Link>
+            )}
+
             {authUser && (
               <>
+                <Link to={"/chat"} className={`btn btn-sm gap-2`}>
+                  <User className="size-5" />
+                  <span className="hidden sm:inline">My Chats</span>
+                </Link>
+
                 <Link to={"/profile"} className={`btn btn-sm gap-2`}>
                   <User className="size-5" />
                   <span className="hidden sm:inline">Profile</span>
