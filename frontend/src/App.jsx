@@ -4,6 +4,12 @@ import SignUpPage from './pages/SignUpPage';
 import LoginPage from './pages/LoginPage';
 import SettingsPage from './pages/SettingsPage';
 import ProfilePage from './pages/ProfilePage';
+import ChatPage from "./pages/ChatPage";
+import AboutUsPage from './pages/AboutUsPage';
+import ContactPage from "./pages/ContactPage";
+import CookiePage from "./pages/CookiePage";
+import ErpPortalPage from "./pages/ErpPortalPage";
+import Footer from "./components/Footer";
 
 import { Routes, Route, Navigate } from "react-router-dom"
 import { useAuthStore } from "./store/useAuthStore";
@@ -12,9 +18,13 @@ import { useThemeStore } from './store/useThemeStore';
 import { useEffect } from "react";
 import { Loader } from "lucide-react"
 import { Toaster } from "react-hot-toast";
-import ChatPage from "./pages/ChatPage";
+
+import { useLocation } from "react-router-dom";
 
 const App = () => {
+
+  const location = useLocation();
+  const excludeFooterPages = ["/login", "/signup"];
 
   const {authUser, checkAuth, isCheckingAuth, onlineUsers} = useAuthStore()
   const {theme} = useThemeStore()
@@ -44,7 +54,13 @@ const App = () => {
         <Route path="/chat" element={authUser ? <ChatPage/> : <Navigate to="/"/>}/>
         <Route path="/settings" element={<SettingsPage/>}/>
         <Route path="/profile" element={authUser ? <ProfilePage/> : <Navigate to="/"/>}/>
+        <Route path="/about" element={<AboutUsPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/cookies" element={<CookiePage />} />
+        <Route path="/erp" element={<ErpPortalPage />} />
       </Routes>
+
+      {!excludeFooterPages.includes(location.pathname) && <Footer />}
 
       <Toaster/>
 
