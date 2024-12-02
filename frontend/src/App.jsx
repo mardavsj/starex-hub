@@ -7,9 +7,10 @@ import ProfilePage from './pages/ProfilePage';
 import ChatPage from "./pages/ChatPage";
 import AboutUsPage from './pages/AboutUsPage';
 import ContactPage from "./pages/ContactPage";
-import CookiePage from "./pages/CookiePage";
+import PrivacyPage from "./pages/PrivacyPage";
 import ErpPortalPage from "./pages/ErpPortalPage";
 import Footer from "./components/Footer";
+import ScrollToTop from "./components/ScrollToTop";
 
 import { Routes, Route, Navigate } from "react-router-dom"
 import { useAuthStore } from "./store/useAuthStore";
@@ -47,6 +48,7 @@ const App = () => {
   return (
     <div data-theme={theme}>
       <Navbar/>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<HomePage/>}/>
         <Route path="/signup" element={!authUser ? <SignUpPage/> : <Navigate to="/chat"/>}/>
@@ -56,7 +58,7 @@ const App = () => {
         <Route path="/profile" element={authUser ? <ProfilePage/> : <Navigate to="/"/>}/>
         <Route path="/about" element={<AboutUsPage />} />
         <Route path="/contact" element={<ContactPage />} />
-        <Route path="/cookies" element={<CookiePage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/erp" element={<ErpPortalPage />} />
       </Routes>
 

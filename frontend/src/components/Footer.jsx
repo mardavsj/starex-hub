@@ -7,9 +7,10 @@ const Footer = () => {
   return (
       <footer className="footer footer-center bg-base-200 text-base-content rounded p-10 mt-10">
           <nav className="grid grid-flow-col gap-4 font-semibold">
+              <Link to="/" className="link link-hover text-primary">Home</Link>
               <Link to="/about" className="link link-hover">About us</Link>
               <Link to="/contact" className="link link-hover">Contact</Link>
-              <Link to="/cookies" className="link link-hover">Cookie Policy</Link>
+              <Link to="/privacy" className="link link-hover">Privacy Policy</Link>
               <Link to="/erp" className="link link-hover">ERP Portal</Link>
           </nav>
           <nav>
