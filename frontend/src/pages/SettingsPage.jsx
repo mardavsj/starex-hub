@@ -96,7 +96,7 @@ const SettingsPage = () => {
                   ))}
                 </div>
 
-                <div className="p-4 border-t border-base-300 bg-base-100">
+                <div className="md:p-4 p-4 px-1 border-t border-base-300 bg-base-100">
                   <div className="flex gap-2">
                     <input
                       type="text"
