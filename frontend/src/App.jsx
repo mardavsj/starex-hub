@@ -25,7 +25,7 @@ import { useLocation } from "react-router-dom";
 const App = () => {
 
   const location = useLocation();
-  const excludeFooterPages = ["/login", "/signup", "/settings", "/chat"];
+  const excludeFooterPages = ["/login", "/signup", "/settings", "/chat", "/profile"];
 
   const {authUser, checkAuth, isCheckingAuth, onlineUsers} = useAuthStore()
   const {theme} = useThemeStore()
