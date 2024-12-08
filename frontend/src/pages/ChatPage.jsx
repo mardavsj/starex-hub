@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useChatStore } from "../store/useChatStore";
 import Sidebar from "../components/Sidebar";
 import NoChatSelected from "../components/NoChatSelected";
@@ -7,6 +7,7 @@ import ChatContainer from "../components/ChatContainer";
 const ChatPage = () => {
 
     const { selectedUser, setIsSidebarOpen } = useChatStore();
+    const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
 
     useEffect(() => {
         document.title = 'Your Chats - Stay Connected on Starex Hub';
@@ -19,12 +20,24 @@ const ChatPage = () => {
             }
         };
 
+        const handleResize = () => {
+            if (window.innerHeight < document.documentElement.clientHeight) {
+                setIsKeyboardOpen(true);
+            } else {
+                setIsKeyboardOpen(false);
+            }
+        };
+
+        window.addEventListener("resize", handleResize);
+        handleResize();
+
         window.addEventListener("popstate", handlePopState);
 
         return () => {
+            window.removeEventListener("resize", handleResize);
             window.removeEventListener("popstate", handlePopState);
         };
-    }, [selectedUser]);
+    }, [selectedUser, setIsSidebarOpen, isKeyboardOpen, setIsKeyboardOpen]);
 
     return (
         <div className="h-screen bg-base-200">
