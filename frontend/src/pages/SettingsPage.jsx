@@ -1,7 +1,7 @@
 import { THEMES } from "../constants";
 import { useThemeStore } from "../store/useThemeStore";
 import { Send } from "lucide-react";
-import { useEffect } from "react";
+import { useRef, useEffect } from "react";
 
 const PREVIEW_MESSAGES = [
   { id: 1, content: "Hey! How's it going?", isSent: false },
@@ -10,13 +10,14 @@ const PREVIEW_MESSAGES = [
 
 const SettingsPage = () => {
   const { theme, setTheme } = useThemeStore();
+  const bottomRef = useRef(null);
 
   useEffect(() => {
     document.title = 'Choose Your Theme - Customize your Starex Hub';
   }, []);
 
   return (
-    <div className="h-screen container mx-auto px-4 pt-20 max-w-5xl">
+    <div className="min-h-screen container mx-auto px-4 pt-20 max-w-5xl">
       <div className="space-y-6">
         <div className="flex flex-col gap-1">
           <h2 className="text-lg font-semibold">Theme</h2>
@@ -31,7 +32,10 @@ const SettingsPage = () => {
                 group flex flex-col items-center gap-1.5 p-2 rounded-lg transition-colors
                 ${theme === t ? "bg-base-200" : "hover:bg-base-200/50"}
               `}
-              onClick={() => setTheme(t)}
+              onClick={() => {
+                setTheme(t)
+                bottomRef.current?.scrollIntoView({ behavior: "smooth" })
+              }}
             >
               <div className="relative h-8 w-full rounded-md overflow-hidden" data-theme={t}>
                 <div className="absolute inset-0 grid grid-cols-4 gap-px p-1">
@@ -50,8 +54,8 @@ const SettingsPage = () => {
         </div>
 
         <h3 className="text-lg font-semibold mb-3">Preview</h3>
-        <div className="rounded-xl border border-base-300 overflow-hidden bg-base-100 shadow-lg">
-          <div className="p-4 bg-base-200">
+        <div className="overflow-hidden bg-base-100">
+          <div className="p-4 bg-base-200 shadow-lg rounded-xl border border-base-300 mb-10">
             <div className="max-w-lg mx-auto">
               <div className="bg-base-100 rounded-xl shadow-sm overflow-hidden">
                 <div className="px-4 py-3 border-b border-base-300 bg-base-100">
@@ -110,6 +114,7 @@ const SettingsPage = () => {
             </div>
           </div>
         </div>
+        <div ref={bottomRef}></div>
       </div>
     </div>
   );
