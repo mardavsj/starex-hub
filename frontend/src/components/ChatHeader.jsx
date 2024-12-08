@@ -7,7 +7,7 @@ const ChatHeader = () => {
     const { onlineUsers } = useAuthStore();
 
     return (
-        <div className="p-2.5 border-b border-base-300 sticky z-10 bg-base-100">
+        <div className="md:p-2.5 p-1.5 border-b border-base-300 sticky z-10 bg-base-100">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                     <div className="avatar">
@@ -29,7 +29,7 @@ const ChatHeader = () => {
                         setSelectedUser(null);
                         setIsSidebarOpen(true);
                     }}
-                    className="px-10"
+                    className="px-2"
                 >
                     <X />
                 </button>

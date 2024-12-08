@@ -38,20 +38,20 @@ const Sidebar = () => {
 
     return (
         <aside className={`h-full w-full lg:w-72 border-r border-base-300 flex flex-col transition-all duration-200 ${!isSidebarOpen ? "hidden" : ""}`}>
-            <div className="border-b border-base-300 w-full p-5">
+            <div className="md:grid flex border-b border-base-300 w-full md:p-5 p-2.5 items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <Users className="size-6" />
-                    <span className="font-medium hidden lg:block">Contacts</span>
+                    <Users className="md:size-6 size-4" />
+                    <span className="font-medium md:text-base text-sm">All Contacts</span>
                 </div>
-                <div className="mt-3 hidden lg:flex items-center gap-2">
-                    <label className="cursor-pointer flex items-center gap-2">
+                <div className="md:mt-3 mt-1.5 flex items-center md:gap-2 gap-1">
+                    <label className="cursor-pointer flex items-center md:gap-2 gap-1">
                         <input
                             type="checkbox"
                             checked={showOnlineOnly}
                             onChange={(e) => setShowOnlineOnly(e.target.checked)}
-                            className="checkbox checkbox-sm"
+                            className="checkbox md:scale-90 scale-50"
                         />
-                        <span className="text-sm">Show online only</span>
+                        <span className="md:text-sm text-[13px]">Show online only</span>
                     </label>
                     <span className="text-xs text-zinc-500">({onlineUsers.length - 1} online)</span>
                 </div>
