@@ -47,7 +47,7 @@ const MessageInput = () => {
     };
 
     return (
-        <div className="p-4 w-full">
+        <div className="md:p-4 p-1 w-full">
             {imagePreview && (
                 <div className="mb-3 flex items-center gap-2">
                     <div className="relative">
@@ -69,6 +69,15 @@ const MessageInput = () => {
             )}
 
             <form onSubmit={handleSendMessage} className="flex items-center gap-2">
+                <button
+                    type="button"
+                    className={`hidden sm:flex btn btn-circle
+                     ${imagePreview ? "text-emerald-500" : "text-zinc-600"}`}
+                    onClick={() => fileInputRef.current?.click()}
+                >
+                    <Image size={20} />
+                </button>
+
                 <div className="flex-1 flex gap-2">
                     <input
                         type="text"
@@ -84,22 +93,13 @@ const MessageInput = () => {
                         ref={fileInputRef}
                         onChange={handleImageChange}
                     />
-
-                    <button
-                        type="button"
-                        className={`hidden sm:flex btn btn-circle
-                     ${imagePreview ? "text-emerald-500" : "text-zinc-400"}`}
-                        onClick={() => fileInputRef.current?.click()}
-                    >
-                        <Image size={20} />
-                    </button>
                 </div>
                 <button
                     type="submit"
-                    className="btn btn-sm btn-circle"
+                    className="btn btn-circle bg-primary text-primary-content hover:bg-primary hover:scale-105"
                     disabled={!text.trim() && !imagePreview}
                 >
-                    <Send size={22} />
+                    <Send size={25} />
                 </button>
             </form>
         </div>
