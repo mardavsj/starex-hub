@@ -8,7 +8,6 @@ import ChatPage from "./pages/ChatPage";
 import AboutUsPage from './pages/AboutUsPage';
 import ContactPage from "./pages/ContactPage";
 import PrivacyPage from "./pages/PrivacyPage";
-import ErpPortalPage from "./pages/ErpPortalPage";
 import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -59,7 +58,6 @@ const App = () => {
         <Route path="/about" element={<AboutUsPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
-        <Route path="/erp" element={<ErpPortalPage />} />
       </Routes>
 
       {!excludeFooterPages.includes(location.pathname) && <Footer />}

@@ -4,6 +4,11 @@ import { FaFacebookF, FaLinkedinIn } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa6";
 
 const Footer = () => {
+
+    const openERPPortal = () => {
+        window.open('https://erp.starexuniversity.in/index.php', '_blank');
+    };
+
   return (
       <footer className="footer footer-center bg-base-200 text-base-content rounded p-10 mt-10">
           <nav className="md:grid md:grid-flow-col gap-4 font-semibold">
@@ -11,7 +16,9 @@ const Footer = () => {
               <Link to="/about" className="link link-hover">About us</Link>
               <Link to="/contact" className="link link-hover">Contact</Link>
               <Link to="/privacy" className="link link-hover">Privacy Policy</Link>
-              <Link to="/erp" className="link link-hover">ERP Portal</Link>
+              <Link to="#" onClick={openERPPortal} className="link link-hover">
+                  ERP Portal
+              </Link>
           </nav>
           <nav>
               <div className="grid grid-flow-col gap-4 text-primary items-center justify-center">
