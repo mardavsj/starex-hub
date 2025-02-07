@@ -17,19 +17,19 @@ const games = [
 
 const GamesPage = () => {
   return (
-    <div className="games-page mt-16 py-5">
+    <div className="games-page mt-16 py-5 p-0">
       <h2 className="text-center text-3xl font-bold mb-8">Our Games</h2>
       <div className="flex flex-col gap-6 items-center">
         {games.map((game) => (
           <div
             key={game.id}
-            className="game-card flex flex-row items-center w-[60%] bg-primary/10 rounded-lg cursor-pointer border border-primary/40 hover:scale-105 ease-in-out transition"
+            className="game-card md:flex flex-row items-center sm:w-[65%] w-[75%] bg-primary/10 rounded-lg cursor-pointer border border-primary/40 hover:scale-105 ease-in-out transition"
             onClick={() => window.open(game.gameLink, "_blank")}
           >
             <img
               src={game.imageUrl}
               alt={game.title}
-              className="w-40 h-40 object-cover rounded-l-lg"
+              className="sm:size-52 h-40 w-72 object-cover rounded-t-lg sm:rounded-l-lg"
             />
             <div className="p-4 flex-1">
               <h3 className="text-xl font-bold text-primary">{game.title}</h3>

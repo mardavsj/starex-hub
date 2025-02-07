@@ -39,17 +39,17 @@ const Navbar = () => {
             {authUser && (
               <>
                 <Link to={"/chat"} className={`btn btn-sm gap-2`}>
-                  <MessageSquare className="size-5" />
+                  <MessageSquare className="size-4" />
                   <span className="hidden sm:inline">My Chats</span>
                 </Link>
 
                 <Link to={"/profile"} className={`btn btn-sm gap-2`}>
-                  <User className="size-5" />
+                  <User className="size-4" />
                   <span className="hidden sm:inline">Profile</span>
                 </Link>
 
                 <button className="flex gap-2 items-center text-red-600" onClick={logout}>
-                  <LogOut className="size-5" />
+                  <LogOut className="size-4" />
                   <span className="hidden sm:inline">Logout</span>
                 </button>
               </>
