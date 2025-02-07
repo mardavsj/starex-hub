@@ -3,7 +3,7 @@ const AuthImagePattern = ({ title, subtitle }) => {
     const logoSquares = [4];
 
     return (
-        <div className="hidden lg:flex items-center justify-center bg-base-200 p-12">
+        <div className="hidden lg:flex items-center justify-center bg-base-200 p-12 z-10">
             <div className="max-w-md text-center">
                 <p className="text-base-content/60 p-4">
                     <span className="font-semibold">Connecting Lives:</span> An Initiative by Starex University
