@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
-import { LogOut, MessageSquare, Settings, User, Gamepad2 } from "lucide-react";
+import { LogOut, MessageSquare, Palette, User, Gamepad2 } from "lucide-react";
 
 const Navbar = () => {
   const { logout, authUser } = useAuthStore();
@@ -25,7 +25,7 @@ const Navbar = () => {
             </Link>
 
             <Link to={"/settings"} className={`btn btn-sm gap-2 transition-colors`}>
-              <Settings className="w-4 h-4" />
+              <Palette className="w-4 h-4" />
               <span className="hidden sm:inline">Themes</span>
             </Link>
 
