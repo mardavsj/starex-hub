@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import Aditya from "../../public/aditya.jpg"
 import Mardav from "../../public/mardav.jpg"
-import Kapil from "../../public/kapil.jpg"
+import Vikash from "../../public/vikash.jpg"
 
 const AboutUsPage = () => {
 
@@ -56,8 +56,8 @@ const AboutUsPage = () => {
           <h2 className="md:text-3xl text-2xl font-bold text-primary md:mb-8 mb-0">Meet Our Team</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 md:gap-8 gap-4">
             <div className="bg-base-200 p-6 rounded-lg shadow-md scale-95 hover:scale-100 transition-transform ease-in-out duration-300">
-              <img src={Kapil} alt="Team Member 1" className="w-32 h-32 mx-auto rounded-full mb-4" />
-              <h4 className="text-xl font-semibold text-primary">Kapil Tanwar</h4>
+              <img src={Vikash} alt="Team Member 1" className="w-32 h-32 mx-auto rounded-full mb-4" />
+              <h4 className="text-xl font-semibold text-primary">Vikash Kumar</h4>
               <p className="text-md">Co-Founder</p>
             </div>
             <div className="bg-base-200 p-6 rounded-lg shadow-md scale-105 hover:scale-110 transition-transform ease-in-out duration-300">
