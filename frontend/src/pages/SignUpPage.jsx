@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import { Eye, EyeOff, Loader2, Lock, Mail, MessageSquare, User } from "lucide-react";
 import { Link } from "react-router-dom";
+import BackgroundAnimation from "../components/BgAnimation"
 
 import AuthImagePattern from "../components/AuthImagePattern";
 import toast from "react-hot-toast";
@@ -40,7 +41,8 @@ const SignUpPage = () => {
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2 mt-3">
-      <div className="flex flex-col justify-center items-center p-6 sm:p-12">
+      <BackgroundAnimation/>
+      <div className="flex flex-col justify-center items-center p-6 sm:p-12 z-10">
         <div className="w-full max-w-md space-y-8">
           <div className="text-center mb-8">
             <div className="flex flex-col items-center gap-2 group">

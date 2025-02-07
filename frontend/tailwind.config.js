@@ -7,7 +7,17 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      animation: {
+        float: "float 25s linear infinite"
+      },
+      keyframes: {
+        float: {
+          "0%": { transform: "translateY(0) rotate(0deg)", opacity: "1", borderRadius: "0" },
+          "100%": { transform: "translateY(-1000px) rotate(500deg)", opacity: "0", borderRadius: "20%" }
+        }
+      },
+    },
   },
   plugins: [daisyui],
   daisyui: {
