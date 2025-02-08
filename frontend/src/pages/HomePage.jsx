@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import BgImage from "../../public/BgImage.png";
 import { Link } from "react-router-dom";
-import BackgroundAnimation from "../components/BgAnimation"
 
 const HomePage = () => {
   useEffect(() => {
@@ -10,8 +9,6 @@ const HomePage = () => {
 
   return (
     <div className="relative w-full min-h-screen bg-gradient-to-l overflow-hidden">
-      <BackgroundAnimation/>
-
       <div className="relative z-10 text-center items-center justify-center mt-16 py-5">
         <img className="mx-auto brightness-90 rounded-lg " alt="university" src={BgImage} />
         <section className="text-base md:mt-20 mt-6 mb-5 md:p-1 p-5 items-center justify-center">
