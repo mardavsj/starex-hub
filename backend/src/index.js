@@ -19,7 +19,7 @@ const __dirname = path.resolve()
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
-    origin: ["http://localhost:5173", "https://starex-hub.onrender.com"],
+    origin: "https://starex-hub.onrender.com",
     credentials: true,
 }))
 
