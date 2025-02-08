@@ -16,7 +16,7 @@ const BgAnimation = () => {
             {circles.map((circle, index) => (
                 <li
                     key={index}
-                    className="absolute -bottom-28 left-0 list-none bg-primary/10 animate-float"
+                    className="absolute -bottom-28 left-0 list-none bg-primary/15 animate-float"
                     style={{
                         left: circle.left,
                         width: circle.width,
