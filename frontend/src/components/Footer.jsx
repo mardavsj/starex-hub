@@ -6,11 +6,11 @@ import { FaInstagram } from "react-icons/fa6";
 const Footer = () => {
 
     const openERPPortal = () => {
-        window.open('https://erp.starexuniversity.in/index.php', '_blank');
+        window.open('http://erp.starexuniversity.in/index.php', '_blank');
     };
 
   return (
-      <footer className="footer footer-center bg-base-200 text-base-content rounded p-10 mt-10">
+      <footer className="footer footer-center bg-base-100 text-base-content rounded p-10 mt-10">
           <nav className="md:grid md:grid-flow-col gap-4 font-semibold">
               <Link to="/" className="link link-hover text-primary">Home</Link>
               <Link to="/about" className="link link-hover">About us</Link>

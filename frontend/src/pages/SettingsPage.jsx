@@ -17,8 +17,8 @@ const SettingsPage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen container mx-auto px-4 pt-20 max-w-5xl">
-      <div className="space-y-6">
+    <div className="min-h-screen mx-auto pt-20 bg-primary/10">
+      <div className="space-y-6 max-w-5xl mx-auto">
         <div className="flex flex-col gap-1">
           <h2 className="text-lg font-semibold">Theme</h2>
           <p className="text-sm text-base-content/70">Choose a theme for your chat interface</p>
@@ -53,9 +53,9 @@ const SettingsPage = () => {
           ))}
         </div>
 
-        <h3 className="text-lg font-semibold mb-3">Preview</h3>
-        <div className="overflow-hidden bg-base-100">
-          <div className="p-4 bg-base-200 shadow-lg rounded-xl border border-base-300 mb-10">
+        <h3 className="text-lg font-semibold">Preview</h3>
+        <div className="overflow-hidden">
+          <div className="p-6 bg-base-200 shadow-lg rounded-xl border border-base-300 mb-10">
             <div className="max-w-lg mx-auto">
               <div className="bg-base-100 rounded-xl shadow-sm overflow-hidden">
                 <div className="px-4 py-3 border-b border-base-300 bg-base-100">

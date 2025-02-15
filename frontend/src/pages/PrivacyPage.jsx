@@ -7,8 +7,8 @@ const PrivacyPage = () => {
   }, []);
 
   return (
-    <div className="py-28 md:w-[60%] md:px-0 px-3 mx-auto">
-      <div className="container mx-auto px-6">
+    <div className="py-28 md:px-0 px-3 mx-auto bg-primary/10">
+      <div className="container mx-auto px-6 md:max-w-[60%]">
         <section className="text-center mb-16">
           <h2 className="md:text-4xl text-2xl font-bold text-primary md:mb-4 mb-2">Privacy Policy</h2>
           <p className="md:text-md text-sm mx-auto">

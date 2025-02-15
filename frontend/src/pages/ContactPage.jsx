@@ -7,8 +7,8 @@ const ContactPage = () => {
   }, []);
 
   return (
-    <div className="py-32 md:w-[60%] md:px-0 px-4 mx-auto">
-      <div className="container mx-auto px-6">
+    <div className="py-32 md:px-0 px-4 mx-auto bg-primary/10 ">
+      <div className="container mx-auto px-6 md:max-w-[60%]">
         <section className="text-center mb-16">
           <h2 className="md:text-4xl text-2xl font-bold text-primary md:mb-8 mb-4">Contact Us</h2>
           <p className="md:text-md text-sm mx-auto">
