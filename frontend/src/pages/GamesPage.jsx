@@ -17,13 +17,13 @@ const games = [
 
 const GamesPage = () => {
   return (
-    <div className="games-page mt-16 py-5 p-0">
+    <div className="games-page mt-16 py-5 p-0 bg-primary/10">
       <h2 className="text-center text-3xl font-bold mb-8">Our Games</h2>
       <div className="flex flex-col gap-6 items-center">
         {games.map((game) => (
           <div
             key={game.id}
-            className="game-card md:flex flex-row items-center sm:w-[65%] w-[75%] bg-primary/10 rounded-lg cursor-pointer border border-primary/40 hover:scale-105 ease-in-out transition"
+            className="game-card md:flex flex-row items-center sm:w-[65%] w-[75%] bg-primary/20 rounded-lg cursor-pointer border border-primary/40 hover:scale-105 ease-in-out transition"
             onClick={() => window.open(game.gameLink, "_blank")}
           >
             <img
