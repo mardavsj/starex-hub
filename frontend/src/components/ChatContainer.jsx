@@ -68,26 +68,27 @@ const ChatContainer = () => {
               </div>
             </div>
             
-            <div className={`chat-bubble flex items-center md:p-3 p-2 md:gap-4 gap-1 rounded-lg max-w-[80%] ${
-                message.senderId === authUser._id
-                  ? getSenderClasses()
-                  : getRecipientClasses()
-              } ${message.senderId === authUser._id
-              ? "bg-primary text-base-100"
-                : "bg-base-200 text-base-content"
-              }`}>
+            <div
+              className={`chat-bubble p-2 md:gap-4 gap-1 rounded-lg max-w-[80%] flex flex-col items-start ${message.senderId === authUser._id ? getSenderClasses() : getRecipientClasses()
+                }`}
+            >
               {message.image && (
-                <img
-                  src={message.image}
-                  alt="Attachment"
-                  className="sm:max-w-[200px] rounded-md mb-2"
-                />
+                <div className="grid">
+                  <img
+                    src={message.image}
+                    alt="Attachment"
+                    className="sm:max-w-[200px] rounded-md"
+                  />
+                </div>
               )}
-              {message.text && <p>{message.text}</p>}
 
-              <time className="md:text-[11px] text-[10px] opacity-50 whitespace-nowrap self-end">
-                {formatMessageTime(message.createdAt)}
-              </time>
+              <div className="flex gap-4">
+                {message.text && <p>{message.text}</p>}
+
+                <time className="md:text-[11px] text-[9px] opacity-50 whitespace-nowrap justify-self-end self-end">
+                  {formatMessageTime(message.createdAt)}
+                </time>
+              </div>
             </div>
           </div>
         ))}
