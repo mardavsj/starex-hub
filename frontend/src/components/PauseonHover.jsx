@@ -7,37 +7,37 @@ const slides = [
         id: 1,
         title: "Mr. Akhil Sharma",
         description: "A place where ideas turn into reality.",
-        image: "../../public/aditya.jpg",
+        image: "/aditya.jpg",
     },
     {
         id: 2,
         title: "Ms. Ritu Malik",
         description: "Work together and grow your skills.",
-        image: "../../public/mardav.jpg",
+        image: "/mardav.jpg",
     },
     {
         id: 3,
         title: "Mr. Rajesh Yadav",
         description: "Resources & support for student success.",
-        image: "../../public/vikash.jpg",
+        image: "/vikash.jpg",
     },
     {
         id: 4,
         title: "Mr. Dilip ",
         description: "Stay updated with latest advancements.",
-        image: "../../public/aditya.jpg",
+        image: "/aditya.jpg",
     },
     {
         id: 5,
         title: "Mr. Nitin Yadav",
         description: "Build strong professional connections.",
-        image: "../../public/mardav.jpg",
+        image: "/mardav.jpg",
     },
     {
         id: 6,
         title: "Ms. Munesh Yadav",
         description: "Opportunities to shape your future.",
-        image: "../../public/vikash.jpg",
+        image: "/vikash.jpg",
     },
 ];
 

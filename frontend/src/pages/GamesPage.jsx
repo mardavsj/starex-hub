@@ -17,7 +17,7 @@ const games = [
 
 const GamesPage = () => {
   return (
-    <div className="games-page mt-16 py-5 p-0 bg-primary/10">
+    <div className="games-page mt-16 py-5 p-0 min-h-screen bg-primary/10">
       <h2 className="text-center text-3xl font-bold mb-8">Our Games</h2>
       <div className="flex flex-col gap-6 items-center">
         {games.map((game) => (
