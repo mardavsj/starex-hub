@@ -116,14 +116,16 @@ import { useChatStore } from "../store/useChatStore";
 import { useAuthStore } from "../store/useAuthStore";
 import { axiosInstance } from "../lib/axios";
 import { formatMessageTime } from "../lib/utils";
-import { socket } from "../lib/socket"; // ✅ Import the socket instance
+import { io } from "socket.io-client";
 
 import ChatHeader from "./ChatHeader";
 import MessageInput from "./MessageInput";
 import MessageSkeleton from "./skeletons/MessageSkeleton";
 
+const socket = io("http://localhost:5001", { transports: ["websocket"] });
+
 const ChatContainer = () => {
-  const { messages, getMessages, isMessagesLoading, selectedUser, subscribeToMessages, unsubscribeFromMessages, setMessages } = useChatStore();
+  const { messages, getMessages, isMessagesLoading, selectedUser, setMessages } = useChatStore();
   const { authUser } = useAuthStore();
   const messageEndRef = useRef(null);
 
@@ -138,23 +140,22 @@ const ChatContainer = () => {
   }, [messages]);
 
   useEffect(() => {
+    // ✅ Listen for deleted messages
     const handleMessageDeleted = (messageId) => {
       setMessages((prevMessages) => prevMessages.filter((msg) => msg._id !== messageId));
     };
 
-    subscribeToMessages();
-    socket.on("messageDeleted", handleMessageDeleted); // ✅ Listen for deletion
+    socket.on("messageDeleted", handleMessageDeleted); // ✅ Listen for real-time message deletion
 
     return () => {
-      unsubscribeFromMessages();
-      socket.off("messageDeleted", handleMessageDeleted); // ✅ Cleanup
+      socket.off("messageDeleted", handleMessageDeleted); // ✅ Cleanup event listener
     };
-  }, [subscribeToMessages, unsubscribeFromMessages, setMessages]);
+  }, [setMessages]);
 
   const deleteMessage = async (messageId) => {
     try {
-      await axiosInstance.delete(`/api/messages/delete/${messageId}`);
-      setMessages(messages.filter((msg) => msg._id !== messageId)); // Remove from local state
+      await axiosInstance.delete(`/messages/delete/${messageId}`);
+      socket.emit("deleteMessage", messageId); // ✅ Notify backend to delete
     } catch (error) {
       console.error("Failed to delete message:", error.response?.data || error.message);
     }
@@ -233,3 +234,4 @@ const ChatContainer = () => {
 };
 
 export default ChatContainer;
+
