@@ -140,22 +140,23 @@ const ChatContainer = () => {
   }, [messages]);
 
   useEffect(() => {
-    // ✅ Listen for deleted messages
     const handleMessageDeleted = (messageId) => {
       setMessages((prevMessages) => prevMessages.filter((msg) => msg._id !== messageId));
     };
 
-    socket.on("messageDeleted", handleMessageDeleted); // ✅ Listen for real-time message deletion
+    socket.on("messageDeleted", handleMessageDeleted);
 
     return () => {
-      socket.off("messageDeleted", handleMessageDeleted); // ✅ Cleanup event listener
+      socket.off("messageDeleted", handleMessageDeleted);
     };
   }, [setMessages]);
 
   const deleteMessage = async (messageId) => {
+    setMessages((prevMessages) => prevMessages.filter((msg) => msg._id !== messageId));
+
     try {
       await axiosInstance.delete(`/messages/delete/${messageId}`);
-      socket.emit("deleteMessage", messageId); // ✅ Notify backend to delete
+      socket.emit("deleteMessage", messageId);
     } catch (error) {
       console.error("Failed to delete message:", error.response?.data || error.message);
     }
@@ -234,4 +235,3 @@ const ChatContainer = () => {
 };
 
 export default ChatContainer;
-
