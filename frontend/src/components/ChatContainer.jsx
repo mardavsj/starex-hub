@@ -2,7 +2,6 @@ import { useEffect, useRef } from "react";
 import { Trash2 } from "lucide-react";
 import { useChatStore } from "../store/useChatStore";
 import { useAuthStore } from "../store/useAuthStore";
-import { axiosInstance } from "../lib/axios";
 import { formatMessageTime } from "../lib/utils";
 
 import ChatHeader from "./ChatHeader";
@@ -10,7 +9,7 @@ import MessageInput from "./MessageInput";
 import MessageSkeleton from "./skeletons/MessageSkeleton";
 
 const ChatContainer = () => {
-  const { messages, getMessages, isMessagesLoading, selectedUser, subscribeToMessages, unsubscribeFromMessages, setMessages } = useChatStore();
+  const { messages, getMessages, isMessagesLoading, selectedUser, subscribeToMessages, unsubscribeFromMessages, deleteMessage } = useChatStore();
   const { authUser } = useAuthStore();
   const messageEndRef = useRef(null);
 
@@ -26,15 +25,6 @@ const ChatContainer = () => {
     }
   }, [messages]);
 
-  const deleteMessage = async (messageId) => {
-    try {
-      await axiosInstance.delete(`/messages/delete/${messageId}`);
-      setMessages(messages.filter((msg) => msg._id !== messageId));
-    } catch (error) {
-      console.error("Failed to delete message:", error.response?.data || error.message);
-    }
-  };
-
   if (isMessagesLoading) {
     return (
       <div className="flex-1 flex flex-col overflow-auto">
@@ -47,7 +37,7 @@ const ChatContainer = () => {
 
   return (
     <div className="flex-1 flex flex-col overflow-auto">
-      <ChatHeader/>
+      <ChatHeader />
 
       <div className="flex-1 overflow-y-auto md:p-4 p-2 md:space-y-3 space-y-1">
         {messages.map((message) => (
@@ -71,8 +61,8 @@ const ChatContainer = () => {
 
             <div
               className={`chat-bubble p-2 md:gap-4 gap-1 rounded-lg max-w-[80%] flex flex-col items-start ${message.senderId === authUser._id
-                  ? "bg-primary text-primary-content"
-                  : "bg-base-200 text-base-content"
+                ? "bg-primary text-primary-content"
+                : "bg-base-200 text-base-content"
                 }`}
             >
               {message.image && (
