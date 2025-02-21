@@ -1,5 +1,5 @@
-import { useEffect, useRef } from "react";
-import { Trash2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Trash2, Loader } from "lucide-react";
 import { useChatStore } from "../store/useChatStore";
 import { useAuthStore } from "../store/useAuthStore";
 import { formatMessageTime } from "../lib/utils";
@@ -9,13 +9,24 @@ import MessageInput from "./MessageInput";
 import MessageSkeleton from "./skeletons/MessageSkeleton";
 
 const ChatContainer = () => {
-  const { messages, getMessages, isMessagesLoading, selectedUser, subscribeToMessages, unsubscribeFromMessages, deleteMessage } = useChatStore();
+  const {
+    messages,
+    getMessages,
+    isMessagesLoading,
+    selectedUser,
+    subscribeToMessages,
+    unsubscribeFromMessages,
+    deleteMessage,
+  } = useChatStore();
+
   const { authUser } = useAuthStore();
   const messageEndRef = useRef(null);
+  const [loadingMessages, setLoadingMessages] = useState({});
 
   useEffect(() => {
     getMessages(selectedUser._id);
     subscribeToMessages();
+
     return () => unsubscribeFromMessages();
   }, [selectedUser._id, getMessages, subscribeToMessages, unsubscribeFromMessages]);
 
@@ -24,6 +35,18 @@ const ChatContainer = () => {
       messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
+
+  const handleDeleteMessage = async (messageId) => {
+    setLoadingMessages((prev) => ({ ...prev, [messageId]: true }));
+
+    try {
+      await deleteMessage(messageId);
+    } catch (error) {
+      console.error("Failed to delete message:", error);
+    }
+
+    setLoadingMessages((prev) => ({ ...prev, [messageId]: false }));
+  };
 
   if (isMessagesLoading) {
     return (
@@ -61,8 +84,8 @@ const ChatContainer = () => {
 
             <div
               className={`chat-bubble p-2 md:gap-4 gap-1 rounded-lg max-w-[80%] flex flex-col items-start ${message.senderId === authUser._id
-                ? "bg-primary text-primary-content"
-                : "bg-base-200 text-base-content"
+                  ? "bg-primary text-primary-content"
+                  : "bg-base-200 text-base-content"
                 }`}
             >
               {message.image && (
@@ -80,10 +103,15 @@ const ChatContainer = () => {
 
                 {message.senderId === authUser._id && (
                   <button
-                    onClick={() => deleteMessage(message._id)}
+                    onClick={() => handleDeleteMessage(message._id)}
                     className="absolute left-[-24px] bottom-[-15px] transform -translate-y-1/2 text-red-500 hover:text-red-700"
+                    disabled={loadingMessages[message._id]}
                   >
-                    <Trash2 size={15} />
+                    {loadingMessages[message._id] ? (
+                      <Loader size={15} className="animate-spin"/>
+                    ) : (
+                      <Trash2 size={15} />
+                    )}
                   </button>
                 )}
               </div>
