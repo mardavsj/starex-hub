@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Trash2, Loader, Edit2, Check, X } from "lucide-react";
+import { Trash2, Loader, Edit2, Check, X, ChevronDown } from "lucide-react";
 import { useChatStore } from "../store/useChatStore";
 import { useAuthStore } from "../store/useAuthStore";
 import { formatMessageTime } from "../lib/utils";
@@ -25,6 +25,7 @@ const ChatContainer = () => {
   const [loadingMessages, setLoadingMessages] = useState({});
   const [editingMessage, setEditingMessage] = useState(null);
   const [editText, setEditText] = useState("");
+  const [openOptions, setOpenOptions] = useState({});
 
   useEffect(() => {
     getMessages(selectedUser._id);
@@ -65,6 +66,10 @@ const ChatContainer = () => {
     } catch (error) {
       console.error("Failed to edit message:", error);
     }
+  };
+
+  const toggleOptions = (messageId) => {
+    setOpenOptions((prev) => ({ ...prev, [messageId]: !prev[messageId] }));
   };
 
   return (
@@ -111,7 +116,7 @@ const ChatContainer = () => {
                       type="text"
                       value={editText}
                       onChange={(e) => setEditText(e.target.value)}
-                      className="w-full px-2 py-1 text-black rounded-md border border-gray-300 focus:outline-none"
+                      className="w-full px-2 py-1 rounded-md focus:outline-none bg-white/30"
                       autoFocus
                     />
                   ) : (
@@ -123,42 +128,58 @@ const ChatContainer = () => {
                   </time>
 
                   {message.senderId === authUser._id && (
-                    <div className="flex space-x-2 absolute bottom-[-12px] left-[-55px] group-hover:flex hidden">
-                      {editingMessage === message._id ? (
-                        <>
-                          <button
-                            onClick={() => handleSaveEdit(message._id)}
-                            className="text-green-500 hover:text-green-700"
-                          >
-                            <Check size={18} />
-                          </button>
-                          <button
-                            onClick={() => setEditingMessage(null)}
-                            className="text-gray-500 hover:text-gray-700"
-                          >
-                            <X size={18} />
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          <button
-                            onClick={() => handleEditMessage(message)}
-                            className="text-blue-500 hover:text-blue-700"
-                          >
-                            <Edit2 size={14} />
-                          </button>
-                          <button
-                            onClick={() => handleDeleteMessage(message._id)}
-                            className="text-red-500 hover:text-red-700"
-                            disabled={loadingMessages[message._id]}
-                          >
-                            {loadingMessages[message._id] ? (
-                              <Loader size={16} className="animate-spin" />
-                            ) : (
-                              <Trash2 size={16} />
-                            )}
-                          </button>
-                        </>
+                    <div className="relative">
+                      <button
+                        onClick={() => toggleOptions(message._id)}
+                        className="text-base-content"
+                      >
+                        <ChevronDown size={18}/>
+                      </button>
+
+                      {openOptions[message._id] && (
+                        <div className="absolute top-10 right-0 bg-base-200 rounded-lg shadow-md p-2 grid sm:flex-row space-x-0 md:space-x-2 sm:w-60 w-44 z-10">
+                          {editingMessage === message._id ? (
+                            <>
+                              <button
+                                onClick={() => handleSaveEdit(message._id)}
+                                className="text-green-600 flex items-center space-x-2 hover:bg-green-500/15 rounded-lg p-2"
+                              >
+                                <Check size={18} />
+                                <span className="inline">Save</span>
+                              </button>
+                              <button
+                                onClick={() => setEditingMessage(null)}
+                                className="text-base-content flex items-center space-x-2 hover:bg-primary/25 rounded-lg p-2"
+                              >
+                                <X size={18} />
+                                <span className="inline">Cancel</span>
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <button
+                                onClick={() => handleEditMessage(message)}
+                                className="flex text-base-content items-center space-x-2 hover:bg-primary/25 rounded-lg p-2"
+                              >
+                                <Edit2 size={18} />
+                                <span className="inline text-start">Edit message</span>
+                              </button>
+
+                              <button
+                                onClick={() => handleDeleteMessage(message._id)}
+                                className="text-red-500 flex items-center space-x-2 hover:bg-red-500/15 rounded-lg p-2"
+                                disabled={loadingMessages[message._id]}
+                              >
+                                {loadingMessages[message._id] ? (
+                                  <Loader size={18} className="animate-spin" />
+                                ) : (
+                                  <Trash2 size={18} />
+                                )}
+                                <span className="inline text-start">Delete message</span>
+                              </button>
+                            </>
+                          )}
+                        </div>
                       )}
                     </div>
                   )}
