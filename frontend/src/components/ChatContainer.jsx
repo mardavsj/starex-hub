@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Trash2, Loader, Edit2, Check, X, ChevronDown } from "lucide-react";
+import { Trash2, Loader, Edit2, ChevronDown } from "lucide-react";
 import { useChatStore } from "../store/useChatStore";
 import { useAuthStore } from "../store/useAuthStore";
 import { formatMessageTime } from "../lib/utils";
@@ -22,10 +22,13 @@ const ChatContainer = () => {
 
   const { authUser } = useAuthStore();
   const messageEndRef = useRef(null);
+  const dropdownRef = useRef(null);
+  const editBoxRef = useRef(null);
+
   const [loadingMessages, setLoadingMessages] = useState({});
   const [editingMessage, setEditingMessage] = useState(null);
   const [editText, setEditText] = useState("");
-  const [openOptions, setOpenOptions] = useState({});
+  const [openDropdownId, setOpenDropdownId] = useState(null);
 
   useEffect(() => {
     getMessages(selectedUser._id);
@@ -39,6 +42,26 @@ const ChatContainer = () => {
       messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpenDropdownId(null);
+      }
+
+      if (
+        editingMessage !== null &&
+        editBoxRef.current &&
+        !editBoxRef.current.contains(event.target)
+      ) {
+        setEditingMessage(null);
+        setOpenDropdownId(null);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [editingMessage]);
 
   const handleDeleteMessage = async (messageId) => {
     setLoadingMessages((prev) => ({ ...prev, [messageId]: true }));
@@ -55,21 +78,26 @@ const ChatContainer = () => {
   const handleEditMessage = (message) => {
     setEditingMessage(message._id);
     setEditText(message.text);
+    setOpenDropdownId(null);
   };
 
   const handleSaveEdit = async (messageId) => {
-    if (!editText.trim()) return;
+    if (!editText.trim()) {
+      setEditingMessage(null);
+      return;
+    }
 
     try {
       await editMessage(messageId, editText);
-      setEditingMessage(null);
     } catch (error) {
       console.error("Failed to edit message:", error);
     }
+
+    setEditingMessage(null);
   };
 
-  const toggleOptions = (messageId) => {
-    setOpenOptions((prev) => ({ ...prev, [messageId]: !prev[messageId] }));
+  const toggleDropdown = (messageId) => {
+    setOpenDropdownId((prev) => (prev === messageId ? null : messageId));
   };
 
   return (
@@ -113,14 +141,17 @@ const ChatContainer = () => {
                 <div className="flex items-center gap-2 relative w-full">
                   {editingMessage === message._id ? (
                     <input
+                      ref={editBoxRef}
                       type="text"
                       value={editText}
                       onChange={(e) => setEditText(e.target.value)}
-                      className="w-full px-2 py-1 rounded-md focus:outline-none bg-white/30"
+                      onKeyDown={(e) => e.key === "Enter" && handleSaveEdit(message._id)}
+                      onBlur={() => handleSaveEdit(message._id)}
+                      className="w-full px-2 py-1 text-black rounded-md border border-gray-300 focus:outline-none"
                       autoFocus
                     />
                   ) : (
-                    <p>{message.text}</p>
+                    <p onDoubleClick={() => handleEditMessage(message)}>{message.text}</p>
                   )}
 
                   <time className="md:text-[11px] text-[9px] opacity-50 whitespace-nowrap justify-self-end self-end">
@@ -130,55 +161,34 @@ const ChatContainer = () => {
                   {message.senderId === authUser._id && (
                     <div className="relative">
                       <button
-                        onClick={() => toggleOptions(message._id)}
+                        onClick={() => toggleDropdown(message._id)}
                         className="text-base-content"
                       >
-                        <ChevronDown size={18}/>
+                        <ChevronDown size={18} />
                       </button>
 
-                      {openOptions[message._id] && (
-                        <div className="absolute top-10 right-0 bg-base-200 rounded-lg shadow-md p-2 grid sm:flex-row space-x-0 md:space-x-2 sm:w-60 w-44 z-10">
-                          {editingMessage === message._id ? (
-                            <>
-                              <button
-                                onClick={() => handleSaveEdit(message._id)}
-                                className="text-green-600 flex items-center space-x-2 hover:bg-green-500/15 rounded-lg p-2"
-                              >
-                                <Check size={18} />
-                                <span className="inline">Save</span>
-                              </button>
-                              <button
-                                onClick={() => setEditingMessage(null)}
-                                className="text-base-content flex items-center space-x-2 hover:bg-primary/25 rounded-lg p-2"
-                              >
-                                <X size={18} />
-                                <span className="inline">Cancel</span>
-                              </button>
-                            </>
-                          ) : (
-                            <>
-                              <button
-                                onClick={() => handleEditMessage(message)}
-                                className="flex text-base-content items-center space-x-2 hover:bg-primary/25 rounded-lg p-2"
-                              >
-                                <Edit2 size={18} />
-                                <span className="inline text-start">Edit message</span>
-                              </button>
+                      {openDropdownId === message._id && (
+                        <div ref={dropdownRef} className="absolute top-10 right-0 bg-base-200 rounded-lg shadow-md p-2 grid sm:flex-row space-x-0 md:space-x-2 sm:w-60 w-44 z-10">
+                          <button
+                            onClick={() => handleEditMessage(message)}
+                            className="flex text-base-content items-center space-x-2 hover:bg-primary/25 rounded-lg p-2"
+                          >
+                            <Edit2 size={18} />
+                            <span className="inline text-start">Edit message</span>
+                          </button>
 
-                              <button
-                                onClick={() => handleDeleteMessage(message._id)}
-                                className="text-red-500 flex items-center space-x-2 hover:bg-red-500/15 rounded-lg p-2"
-                                disabled={loadingMessages[message._id]}
-                              >
-                                {loadingMessages[message._id] ? (
-                                  <Loader size={18} className="animate-spin" />
-                                ) : (
-                                  <Trash2 size={18} />
-                                )}
-                                <span className="inline text-start">Delete message</span>
-                              </button>
-                            </>
-                          )}
+                          <button
+                            onClick={() => handleDeleteMessage(message._id)}
+                            className="text-red-500 flex items-center space-x-2 hover:bg-red-500/15 rounded-lg p-2"
+                            disabled={loadingMessages[message._id]}
+                          >
+                            {loadingMessages[message._id] ? (
+                              <Loader size={18} className="animate-spin" />
+                            ) : (
+                              <Trash2 size={18} />
+                            )}
+                            <span className="inline text-start">Delete message</span>
+                          </button>
                         </div>
                       )}
                     </div>
