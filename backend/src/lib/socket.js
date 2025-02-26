@@ -26,6 +26,11 @@ io.on("connection", (socket) => {
         io.emit("getOnlineUsers", Object.keys(userSocketMap));
     }
 
+    socket.on("editMessage", ({ messageId, newText }) => {
+        console.log("Editing message:", messageId, "New Text:", newText);
+        io.emit("messageEdited", { messageId, newText });
+    });
+
     socket.on("deleteMessage", (messageId) => {
         console.log("Deleting message:", messageId);
         io.emit("messageDeleted", messageId);
