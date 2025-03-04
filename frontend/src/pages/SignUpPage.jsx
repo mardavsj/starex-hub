@@ -1,16 +1,15 @@
 import { useState, useEffect } from "react";
 import { useAuthStore } from "../store/useAuthStore";
-import { Eye, EyeOff, Loader2, Lock, Mail, MessageSquare, User } from "lucide-react";
+import { Eye, EyeOff, Loader2, Lock, Mail, MessageSquare, Hash } from "lucide-react";
 import { Link } from "react-router-dom";
-import BackgroundAnimation from "../components/BgAnimation"
-
+import BackgroundAnimation from "../components/BgAnimation";
 import AuthImagePattern from "../components/AuthImagePattern";
 import toast from "react-hot-toast";
 
 const SignUpPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    fullName: "",
+    enrollmentNo: "",
     email: "",
     password: "",
   });
@@ -18,7 +17,7 @@ const SignUpPage = () => {
   const { signup, isSigningUp } = useAuthStore();
 
   const validateForm = () => {
-    if (!formData.fullName.trim()) return toast.error("Full name is required");
+    if (!formData.enrollmentNo.trim()) return toast.error("Enrollment Number is required");
     if (!formData.email.trim()) return toast.error("Email is required");
     if (!/\S+@\S+\.\S+/.test(formData.email)) return toast.error("Invalid email format");
     if (!formData.password) return toast.error("Password is required");
@@ -31,24 +30,23 @@ const SignUpPage = () => {
     e.preventDefault();
 
     const success = validateForm();
-
     if (success === true) signup(formData);
   };
 
   useEffect(() => {
-    document.title = 'Create Your Account - Join Starex Hub';
+    document.title = "Create Your Account - Join Starex Hub";
   }, []);
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2 mt-3">
-      <BackgroundAnimation/>
+      <BackgroundAnimation />
       <div className="flex flex-col justify-center items-center p-6 sm:p-12 z-10">
         <div className="w-full max-w-md space-y-8">
           <div className="text-center mb-8">
             <div className="flex flex-col items-center gap-2 group">
               <div
                 className="size-12 rounded-xl bg-primary/10 flex items-center justify-center 
-              group-hover:bg-primary/20 transition-colors"
+                group-hover:bg-primary/20 transition-colors"
               >
                 <MessageSquare className="size-6 text-primary" />
               </div>
@@ -61,18 +59,19 @@ const SignUpPage = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="form-control">
               <label className="label">
-                <span className="label-text font-medium">Full Name</span>
+                <span className="label-text font-medium">Enrollment Number</span>
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="size-5 text-base-content/40" />
+                  <Hash className="size-5 text-base-content/40" />
                 </div>
                 <input
                   type="text"
-                  className={`input input-bordered w-full pl-10`}
-                  placeholder="John Doe"
-                  value={formData.fullName}
-                  onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                  className="input input-bordered w-full pl-10"
+                  placeholder="123456"
+                  value={formData.enrollmentNo}
+                  onChange={(e) => setFormData({ ...formData, enrollmentNo: e.target.value })}
+                  required
                 />
               </div>
             </div>
@@ -87,10 +86,11 @@ const SignUpPage = () => {
                 </div>
                 <input
                   type="email"
-                  className={`input input-bordered w-full pl-10`}
+                  className="input input-bordered w-full pl-10"
                   placeholder="you@example.com"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  required
                 />
               </div>
             </div>
@@ -105,10 +105,11 @@ const SignUpPage = () => {
                 </div>
                 <input
                   type={showPassword ? "text" : "password"}
-                  className={`input input-bordered w-full pl-10`}
+                  className="input input-bordered w-full pl-10"
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  required
                 />
                 <button
                   type="button"
@@ -154,4 +155,5 @@ const SignUpPage = () => {
     </div>
   );
 };
+
 export default SignUpPage;
