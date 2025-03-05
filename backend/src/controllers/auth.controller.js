@@ -1,33 +1,92 @@
 import crypto from "crypto";
 import User from "../models/user.model.js"
 import Enrollment from "../models/enrollment.model.js";
-import bcrypt from "bcryptjs"
+import OTP from "../models/otp.model.js";
+import bcrypt from "bcryptjs";
 import { generateToken } from "../lib/utils.js";
 import cloudinary from "../lib/cloudinary.js";
-import sendEmail from "../lib/sendEmail.js"
+import nodemailer from "nodemailer";
+import sendEmail from "../lib/sendEmail.js";
 
-export const signup = async (req, res) => {
-    const { enrollmentNo, email, password } = req.body;
+const transporter = nodemailer.createTransport({
+    service: "Gmail",
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+    },
+});
+
+export const sendOtp = async (req, res) => {
+    const { enrollmentNo, email } = req.body;
+
     try {
-        if (!enrollmentNo || !email || !password) {
-            return res.status(400).json({ message: "All fields are required" });
+        if (!enrollmentNo || !email) {
+            return res.status(400).json({ message: "Enrollment Number & Email are required" });
         }
-
-        if (password.length < 6) {
-            return res.status(400).json({ message: "Password must be at least 6 characters" });
-        }
-
-        const user = await User.findOne({ email });
-        if (user) return res.status(400).json({ message: "Email already exists" });
 
         const enrollmentData = await Enrollment.findOne({ enrollmentNo });
         if (!enrollmentData) {
             return res.status(400).json({ message: "Invalid Enrollment Number" });
         }
 
+
+        const otpCode = crypto.randomInt(100000, 999999).toString();
+        const otpExpiry = Date.now() + 10 * 60 * 1000;
+
+        await OTP.deleteOne({ email });
+        await OTP.create({ email, otp: otpCode, expiresAt: otpExpiry });
+
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: "Your OTP for Account Verification",
+            text: `Your OTP is ${otpCode}. It will expire in 10 minutes.`,
+        });
+
+        res.status(200).json({ message: "OTP sent to your email" });
+    } catch (error) {
+        console.error("Error in sending OTP:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+};
+
+export const signup = async (req, res) => {
+    const { enrollmentNo, email, password, otp } = req.body;
+
+    try {
+        if (!enrollmentNo || !email || !password || !otp) {
+            return res.status(400).json({ message: "All fields are required" });
+        }
+
+        // Step 1: Check OTP Exists & Not Expired
+        const otpRecord = await OTP.findOne({ email });
+        if (!otpRecord) {
+            return res.status(400).json({ message: "OTP not found, please request a new one." });
+        }
+
+        // Compare OTP (Stored OTP is hashed)
+        const isOtpValid = await bcrypt.compare(otp, otpRecord.otp);
+        if (!isOtpValid || otpRecord.expiresAt < Date.now()) {
+            return res.status(400).json({ message: "Invalid or expired OTP" });
+        }
+
+        // Step 2: Check if User Already Exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ message: "Email already exists" });
+        }
+
+        // Step 3: Validate Enrollment Number
+        const enrollmentData = await Enrollment.findOne({ enrollmentNo });
+        if (!enrollmentData) {
+            return res.status(400).json({ message: "Invalid Enrollment Number" });
+        }
+
+        // Step 4: Hash Password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
+        // Step 5: Create User
         const newUser = new User({
             enrollmentNo,
             fullName: enrollmentData.fullName,
@@ -35,17 +94,23 @@ export const signup = async (req, res) => {
             password: hashedPassword,
         });
 
-        generateToken(newUser._id, res);
+        // Step 6: Save User & Generate Token
         await newUser.save();
+        generateToken(newUser._id, res);
 
+        // Step 7: Delete OTP Record After Successful Signup
+        await OTP.deleteOne({ email });
+
+        // Step 8: Send Response
         res.status(201).json({
             _id: newUser._id,
             fullName: newUser.fullName,
             email: newUser.email,
             profilePic: newUser.profilePic,
         });
+
     } catch (error) {
-        console.log("Error in signup controller", error.message);
+        console.error("Error in signup controller:", error.message);
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
