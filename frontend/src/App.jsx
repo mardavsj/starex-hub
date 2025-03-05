@@ -63,7 +63,7 @@ const App = () => {
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/games" element={<GamesPage />} />
         <Route path="/forgot-password" element={<ForgotPassword /> } />
-        <Route path="/reset-password/:token" element={authUser ? <ResetPassword /> : <Navigate to="/login"/>} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
       </Routes>
 
       {!excludeFooterPages.includes(location.pathname) && <Footer />}

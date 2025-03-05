@@ -1,7 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from "react-hot-toast";
 import BackgroundAnimation from "../components/BgAnimation";
 
 const ForgotPassword = () => {
@@ -11,29 +10,11 @@ const ForgotPassword = () => {
         e.preventDefault();
         try {
             const response = await axios.post("/api/auth/forgot-password", { email });
-
-            toast.success(response.data.message, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                theme: "light",
-            });
+            toast.success(response.data.message);
 
         } catch (error) {
             console.log(error);
-
-            toast.error(error.response?.data?.message || "Something went wrong", {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                theme: "light",
-            });
+            toast.error(error.response?.data?.message || "Something went wrong");
         }
     };
 
