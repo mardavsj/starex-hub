@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
 import { useAuthStore } from "../store/useAuthStore";
-import { Camera, Mail, User } from "lucide-react";
+import { Camera, Mail, User, Hash } from "lucide-react";
 
 const ProfilePage = () => {
-
   useEffect(() => {
-    document.title = 'Personalize Your Avatar - Starex Hub Profile';
+    document.title = "Personalize Your Avatar - Starex Hub Profile";
   }, []);
 
   const { authUser, isUpdatingProfile, updateProfile } = useAuthStore();
@@ -27,11 +26,11 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="min-h-screen pt-20 bg-primary/10">
-      <div className="max-w-2xl mx-auto p-4 py-8">
-        <div className="bg-base-300 rounded-xl p-6 space-y-8">
+    <div className="min-h-screen bg-primary/10">
+      <div className="pt-16">
+        <div className="max-w-2xl mx-auto p-6 space-y-8">
           <div className="text-center">
-            <h1 className="text-2xl font-semibold ">Profile</h1>
+            <h1 className="text-2xl font-semibold">Profile</h1>
             <p className="mt-2">Your profile information</p>
           </div>
 
@@ -40,7 +39,7 @@ const ProfilePage = () => {
               <img
                 src={selectedImg || authUser.profilePic || "/avatar.png"}
                 alt="Profile"
-                className="size-32 rounded-full object-cover border-4 "
+                className="size-40 rounded-full object-cover"
               />
               <label
                 htmlFor="avatar-upload"
@@ -63,40 +62,49 @@ const ProfilePage = () => {
                 />
               </label>
             </div>
-            <p className="text-sm text-zinc-400">
+            <p className="text-sm">
               {isUpdatingProfile ? "Uploading..." : "Click the camera icon to update your photo"}
             </p>
           </div>
 
           <div className="space-y-6">
             <div className="space-y-1.5">
-              <div className="text-sm text-zinc-400 flex items-center gap-2">
+              <div className="text-md text-primary font-bold flex items-center gap-2">
                 <User className="w-4 h-4" />
                 Full Name
               </div>
-              <p className="px-4 py-2.5 bg-base-200 rounded-lg border">{authUser?.fullName}</p>
+              <p className="px-4 py-2.5 bg-primary/25 rounded-lg border">{authUser?.fullName}</p>
             </div>
 
             <div className="space-y-1.5">
-              <div className="text-sm text-zinc-400 flex items-center gap-2">
+              <div className="text-md text-primary font-bold flex items-center gap-2">
+                <Hash className="w-4 h-4" />
+                Enrollment Number
+              </div>
+              <p className="px-4 py-2.5 bg-primary/25 rounded-lg border">{authUser?.enrollmentNo}</p>
+            </div>
+
+            <div className="space-y-1.5">
+              <div className="text-md text-primary font-bold flex items-center gap-2">
                 <Mail className="w-4 h-4" />
                 Email Address
               </div>
-              <p className="px-4 py-2.5 bg-base-200 rounded-lg border">{authUser?.email}</p>
+              <p className="px-4 py-2.5 bg-primary/25 rounded-lg border">{authUser?.email}</p>
             </div>
-          </div>
 
-          <div className="mt-6 bg-base-300 rounded-xl p-6">
-            <h2 className="text-lg font-medium  mb-4">Account Information</h2>
-            <div className="space-y-3 text-sm">
-              <div className="flex items-center justify-between py-2 border-b border-zinc-700">
-                <span>Member Since</span>
-                <span>{authUser.createdAt?.split("T")[0]}</span>
-              </div>
-              <div className="flex items-center justify-between py-2">
-                <span>Account Status</span>
-                <span className="text-green-500">Active</span>
-              </div>
+          </div>
+        </div>
+        <div className="mt-16 p-10 bg-primary/25 text-center">
+          <h2 className="text-lg font-medium">Account Information</h2>
+          <hr className="max-w-[25%] mx-auto border border-zinc-400 m-4" />
+          <div className="text-sm">
+            <div className="flex items-center justify-center gap-2">
+              <span>Member Since:</span>
+              <span>{authUser.createdAt?.split("T")[0]}</span>
+            </div>
+            <div className="flex items-center justify-center gap-2">
+              <span>Account Status:</span>
+              <span className="text-green-500 font-bold">Active</span>
             </div>
           </div>
         </div>
@@ -104,4 +112,5 @@ const ProfilePage = () => {
     </div>
   );
 };
+
 export default ProfilePage;

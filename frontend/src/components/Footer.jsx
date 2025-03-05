@@ -10,7 +10,7 @@ const Footer = () => {
     };
 
   return (
-      <footer className="footer footer-center bg-base-100 text-base-content rounded p-10 mt-10">
+      <footer className="footer footer-center bg-base-100 text-base-content rounded sm:p-10 p-5 sm:mt-10 mt-5">
           <nav className="md:grid md:grid-flow-col gap-4 font-semibold">
               <Link to="/" className="link link-hover text-primary">Home</Link>
               <Link to="/about" className="link link-hover">About us</Link>

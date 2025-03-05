@@ -55,7 +55,7 @@ const SettingsPage = () => {
 
         <h3 className="text-lg font-semibold">Preview</h3>
         <div className="overflow-hidden">
-          <div className="p-6 bg-base-200 shadow-lg rounded-xl border border-base-300 mb-10">
+          <div className="p-6 bg-base-200 shadow-lg rounded-xl border border-base-300 sm:mb-10 mb-5">
             <div className="max-w-lg mx-auto">
               <div className="bg-base-100 rounded-xl shadow-sm overflow-hidden">
                 <div className="px-4 py-3 border-b border-base-300 bg-base-100">

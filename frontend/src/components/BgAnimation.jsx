@@ -1,11 +1,11 @@
 import { useState } from "react";
 
 const BgAnimation = () => {
+    const squareSize = "130px";
+
     const [circles] = useState(() =>
-        Array.from({ length: 15 }).map(() => ({
+        Array.from({ length: 16 }).map(() => ({
             left: `${Math.random() * 90}%`,
-            width: `${Math.random() * 100 + 50}px`,
-            height: `${Math.random() * 100 + 50}px`,
             animationDelay: `${Math.random() * 20}s`,
             animationDuration: `${Math.random() * 30 + 10}s`,
         }))
@@ -19,8 +19,8 @@ const BgAnimation = () => {
                     className="absolute -bottom-28 left-0 list-none bg-primary/15 animate-float"
                     style={{
                         left: circle.left,
-                        width: circle.width,
-                        height: circle.height,
+                        width: squareSize,
+                        height: squareSize,
                         animationDelay: circle.animationDelay,
                         animationDuration: circle.animationDuration,
                     }}

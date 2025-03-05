@@ -27,7 +27,7 @@ import { useLocation } from "react-router-dom";
 const App = () => {
 
   const location = useLocation();
-  const excludeFooterPages = ["/login", "/signup", "/settings", "/chat", "/profile"];
+  const excludeFooterPages = ["/login", "/signup", "/settings", "/chat", "/profile", "/forgot-password", "/reset-password/:token"];
 
   const {authUser, checkAuth, isCheckingAuth, onlineUsers} = useAuthStore()
   const {theme} = useThemeStore()
@@ -62,7 +62,7 @@ const App = () => {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/games" element={<GamesPage />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/forgot-password" element={<ForgotPassword /> } />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
       </Routes>
 
