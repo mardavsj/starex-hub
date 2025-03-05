@@ -84,7 +84,7 @@ const LoginPage = () => {
                   )}
                 </button>
               </div>
-              <div className="text-center">
+              <div className="text-center mt-2">
                 <p className="text-base-content/60">
                   <Link to="/forgot-password" className="link link-primary">
                     Forgot Password?
@@ -118,7 +118,7 @@ const LoginPage = () => {
 
       <AuthImagePattern
         title={"Welcome back!"}
-        subtitle={"Sign in to continue your conversations and catch up with your messages."}
+        subtitle={"Sign in to start or continue your conversations."}
       />
     </div>
   );
