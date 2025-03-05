@@ -168,7 +168,7 @@ const ChatContainer = () => {
                       </button>
 
                       {openDropdownId === message._id && (
-                        <div ref={dropdownRef} className="absolute top-10 right-0 bg-base-200 rounded-lg shadow-md p-2 grid sm:flex-row space-x-0 md:space-x-2 sm:w-60 w-44 z-10">
+                        <div ref={dropdownRef} className="absolute top-10 right-0 bg-base-200 rounded-lg shadow-md p-2 grid sm:flex-row sm:w-60 w-44 z-10">
                           <button
                             onClick={() => handleEditMessage(message)}
                             className="flex text-base-content items-center space-x-2 hover:bg-primary/25 rounded-lg p-2"

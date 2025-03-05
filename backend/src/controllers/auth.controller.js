@@ -239,6 +239,30 @@ export const updateProfile = async (req, res) => {
     }
 };
 
+export const deleteAccount = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        console.log("Attempting to delete user with ID:", userId);
+
+        if (!userId) {
+            return res.status(400).json({ message: "User ID is missing" });
+        }
+
+        const deletedUser = await User.findByIdAndDelete(userId);
+
+        if (!deletedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.clearCookie("jwt");
+        res.status(200).json({ message: "Your account has been permanently deleted." });
+
+    } catch (error) {
+        console.error("Error deleting account:", error);
+        res.status(500).json({ message: "Failed to delete account. Please try again later." });
+    }
+};
+
 export const checkAuth = (req, res) => {
     try {
         res.status(200).json(req.user);

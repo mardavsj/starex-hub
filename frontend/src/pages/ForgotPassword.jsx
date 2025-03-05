@@ -22,7 +22,7 @@ const ForgotPassword = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col justify-center items-center bg-primary/10">
+        <div className="min-h-screen flex flex-col justify-center items-center bg-primary/10 p-2">
             <BackgroundAnimation />
             <div className="z-10 text-center">
                 <h1 className="text-4xl font-bold mb-20">Forgot Password</h1>
