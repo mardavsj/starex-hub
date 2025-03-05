@@ -3,21 +3,27 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import BackgroundAnimation from "../components/BgAnimation";
+import { Loader2 } from "lucide-react";
 
 const ResetPassword = () => {
     const { token } = useParams();
     console.log("Token from URL", token);
+
     const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
+
         try {
             const response = await axios.post(`/api/auth/reset-password/${token}`, { password });
             toast.success(response.data.message);
-
         } catch (error) {
             toast.error(error.response?.data?.message || "Something went wrong");
         }
+
+        setLoading(false);
     };
 
     return (
@@ -34,8 +40,15 @@ const ResetPassword = () => {
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />
-                    <button type="submit" className="btn btn-primary w-full">
-                        Reset Password
+                    <button type="submit" className="btn btn-primary w-full" disabled={loading}>
+                        {loading ? (
+                            <>
+                                <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                                Resetting...
+                            </>
+                        ) : (
+                            "Reset Password"
+                        )}
                     </button>
                 </form>
             </div>

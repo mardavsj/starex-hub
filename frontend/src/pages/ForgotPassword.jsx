@@ -2,20 +2,23 @@ import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import BackgroundAnimation from "../components/BgAnimation";
+import { Loader2 } from "lucide-react";
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         try {
             const response = await axios.post("/api/auth/forgot-password", { email });
             toast.success(response.data.message);
-
         } catch (error) {
             console.log(error);
             toast.error(error.response?.data?.message || "Something went wrong");
         }
+        setLoading(false);
     };
 
     return (
@@ -32,8 +35,15 @@ const ForgotPassword = () => {
                         onChange={(e) => setEmail(e.target.value)}
                         required
                     />
-                    <button type="submit" className="btn btn-primary w-full">
-                        Send Reset Link
+                    <button type="submit" className="btn btn-primary w-full" disabled={loading}>
+                        {loading ? (
+                            <>
+                                <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                                Sending...
+                            </>
+                        ) : (
+                            "Send Reset Link"
+                        )}
                     </button>
                 </form>
             </div>
