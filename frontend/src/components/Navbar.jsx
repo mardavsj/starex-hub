@@ -48,7 +48,7 @@ const Navbar = () => {
                   <span className="hidden sm:inline">Profile</span>
                 </Link>
 
-                <button className="flex gap-2 items-center text-red-500 hover:bg-red-500/15 p-2 rounded-md" onClick={logout}>
+                <button className="flex gap-2 items-center text-red-500 bg-red-500/15 hover:bg-red-500/25 btn btn-sm border-transparent shadow-none hover:border-red-500" onClick={logout}>
                   <LogOut className="size-4" />
                   <span className="hidden sm:inline">Logout</span>
                 </button>

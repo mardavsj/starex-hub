@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useChatStore } from "../store/useChatStore";
-import SidebarSkeleton from './skeletons/SidebarSkeleton';
-import { Users } from "lucide-react";
+import SidebarSkeleton from "./skeletons/SidebarSkeleton";
+import { Users, GraduationCap, BriefcaseBusiness } from "lucide-react";
 import { useAuthStore } from "../store/useAuthStore";
 
 const Sidebar = () => {
@@ -37,13 +37,13 @@ const Sidebar = () => {
     if (isUsersLoading) return <SidebarSkeleton />;
 
     return (
-        <aside className={`h-full w-full lg:w-72 border-r border-base-300 flex flex-col transition-all duration-200 ${!isSidebarOpen ? "hidden" : ""}`}>
+        <aside className={`h-full w-full lg:w-96 border-r border-base-300 flex flex-col transition-all duration-200 ${!isSidebarOpen ? "hidden" : ""}`}>
             <div className="md:grid flex border-b border-base-300 w-full md:p-5 p-2.5 items-center justify-between">
                 <div className="flex items-center gap-2">
                     <Users className="md:size-6 size-4" />
                     <span className="font-medium md:text-base text-sm">All Contacts</span>
                 </div>
-                <div className="md:mt-3 mt-1.5 flex items-center md:gap-2 gap-1">
+                <div className="md:mt-3 mt-1 flex items-center md:gap-2 gap-1">
                     <label className="cursor-pointer flex items-center md:gap-2 gap-1">
                         <input
                             type="checkbox"
@@ -64,8 +64,8 @@ const Sidebar = () => {
                         onClick={() => handleUserSelect(user)}
                         className={`
                             w-full p-3 flex items-center gap-3
-                            hover:bg-base-300 transition-colors
-                            ${selectedUser?._id === user._id ? "bg-base-300 ring-1 ring-base-300" : ""}
+                            hover:bg-primary/20 transition-colors
+                            ${selectedUser?._id === user._id ? "bg-primary/20" : ""}
                         `}
                     >
                         <div className="relative mx-auto lg:mx-0">
@@ -83,8 +83,12 @@ const Sidebar = () => {
                         </div>
 
                         <div className="flex-1 text-left min-w-0">
-                            <div className="font-medium truncate">{user.fullName}</div>
-                            <div className="text-sm text-zinc-400">
+                            <div className="font-medium truncate flex items-center gap-2">
+                                <span>{user.fullName}</span>
+                                {user.role === "student" && <GraduationCap className="size-5 text-primary" />}
+                                {user.role === "faculty" && <BriefcaseBusiness className="size-4 text-primary" />}
+                            </div>
+                            <div className={`text-sm ${onlineUsers.includes(user._id) ? "text-green-500" : "text-zinc-400"}`}>
                                 {onlineUsers.includes(user._id) ? "Online" : "Offline"}
                             </div>
                         </div>
@@ -96,7 +100,7 @@ const Sidebar = () => {
                 )}
 
                 {users.length === 0 && (
-                    <div className="text-center text-zinc-500 py-4">No online users</div>
+                    <div className="text-center text-zinc-500 py-4">No users available</div>
                 )}
             </div>
         </aside>
@@ -104,4 +108,3 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
-

@@ -4,11 +4,16 @@ const enrollmentSchema = new mongoose.Schema({
     enrollmentNo: {
         type: String,
         required: true,
-        unique: true,
+        unique: true
     },
     fullName: {
         type: String,
+        required: true
+    },
+    role: {
+        type: String,
         required: true,
+        enum: ["student", "faculty"]
     }
 });
 

@@ -73,7 +73,7 @@ const ProfilePage = () => {
                 <User className="w-4 h-4" />
                 Full Name
               </div>
-              <p className="px-4 py-2.5 bg-primary/25 rounded-lg border">{authUser?.fullName}</p>
+              <p className="px-4 py-2.5 bg-primary/25 rounded-lg border">{authUser?.fullName || "N/A"}</p>
             </div>
 
             <div className="space-y-1.5">
@@ -81,7 +81,7 @@ const ProfilePage = () => {
                 <Hash className="w-4 h-4" />
                 Enrollment Number
               </div>
-              <p className="px-4 py-2.5 bg-primary/25 rounded-lg border">{authUser?.enrollmentNo}</p>
+              <p className="px-4 py-2.5 bg-primary/25 rounded-lg border">{authUser?.enrollmentNo || "N/A"}</p>
             </div>
 
             <div className="space-y-1.5">
@@ -89,7 +89,7 @@ const ProfilePage = () => {
                 <Mail className="w-4 h-4" />
                 Email Address
               </div>
-              <p className="px-4 py-2.5 bg-primary/25 rounded-lg border">{authUser?.email}</p>
+              <p className="px-4 py-2.5 bg-primary/25 rounded-lg border">{authUser?.email || "N/A"}</p>
             </div>
 
           </div>

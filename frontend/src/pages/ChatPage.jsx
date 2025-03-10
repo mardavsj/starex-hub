@@ -5,13 +5,11 @@ import NoChatSelected from "../components/NoChatSelected";
 import ChatContainer from "../components/ChatContainer";
 
 const ChatPage = () => {
-
     const { selectedUser, setIsSidebarOpen } = useChatStore();
     const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
 
     useEffect(() => {
         document.title = 'Your Chats - Stay Connected on Starex Hub';
-
         window.history.pushState({ selectedUser: selectedUser }, "");
 
         const handlePopState = (e) => {
@@ -30,7 +28,6 @@ const ChatPage = () => {
 
         window.addEventListener("resize", handleResize);
         handleResize();
-
         window.addEventListener("popstate", handlePopState);
 
         return () => {
@@ -41,9 +38,9 @@ const ChatPage = () => {
 
     return (
         <div className="md:h-screen max-h-screen bg-primary/10">
-            <div className="flex items-center justify-center md:pt-20 pt-16 md:px-4">
-                <div className="bg-base-100 rounded-lg shadow-cl w-full max-w-6xl h-[calc(100vh-8rem)]">
-                    <div className="flex h-full rounded-lg overflow-hidden">
+            <div className="flex items-center justify-center pt-16">
+                <div className="bg-base-100 rounded-lg shadow-cl w-full h-[calc(100vh-4rem)]">
+                    <div className="flex h-full border-t border-base-300 overflow-hidden">
                         <Sidebar />
 
                         {!selectedUser ? <NoChatSelected /> : <ChatContainer />}

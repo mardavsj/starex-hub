@@ -36,7 +36,6 @@ const HomePage = () => {
                 Dedicated experts who inspire and guide students toward success through education, mentorship, and research — <span className="font-bold text-primary">Meet Our Faculty.</span>
               </div>
             </div>
-
             <PauseOnHover />
           </div>
         </section>

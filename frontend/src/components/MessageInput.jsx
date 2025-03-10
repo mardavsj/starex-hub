@@ -47,7 +47,7 @@ const MessageInput = () => {
     };
 
     return (
-        <div className="md:p-4 p-1 w-full">
+        <div className="w-full bg-primary/20">
             {imagePreview && (
                 <div className="mb-3 flex items-center gap-2">
                     <div className="relative">
@@ -68,20 +68,20 @@ const MessageInput = () => {
                 </div>
             )}
 
-            <form onSubmit={handleSendMessage} className="flex items-center gap-2">
+            <form onSubmit={handleSendMessage} className="flex items-center gap-2 border-t border-base-300 sm:p-2 p-1">
                 <button
                     type="button"
-                    className={`flex btn btn-circle
-                     ${imagePreview ? "text-emerald-500" : "text-zinc-600"}`}
+                    className={`sm:flex hidden btn btn-circle 
+                     ${imagePreview ? "text-emerald-500" : "text-primary"}`}
                     onClick={() => fileInputRef.current?.click()}
                 >
-                    <Image size={20} />
+                    <Image size={22} />
                 </button>
 
                 <div className="flex-1 flex gap-2">
                     <input
                         type="text"
-                        className="w-full h-10 input input-bordered rounded-lg input-sm sm:input-md focus:outline-none"
+                        className="w-full h-10 input input-sm sm:input-md focus:outline-none focus:border-none bg-transparent placeholder:text-base-content"
                         placeholder="Type a message..."
                         value={text}
                         onChange={(e) => setText(e.target.value)}
@@ -96,7 +96,7 @@ const MessageInput = () => {
                 </div>
                 <button
                     type="submit"
-                    className="btn btn-circle bg-primary text-primary-content hover:bg-primary hover:scale-105"
+                    className="btn btn-circle z-10 bg-primary text-primary-content hover:bg-primary hover:scale-105"
                     disabled={!text.trim() && !imagePreview}
                 >
                     <Send size={25} />

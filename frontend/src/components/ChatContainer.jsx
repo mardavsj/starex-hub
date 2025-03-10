@@ -101,7 +101,7 @@ const ChatContainer = () => {
   };
 
   return (
-    <div className="flex-1 flex flex-col overflow-auto">
+    <div className="flex-1 flex flex-col overflow-auto bg-primary/5">
       <ChatHeader />
 
       {isMessagesLoading ? (
@@ -147,7 +147,7 @@ const ChatContainer = () => {
                       onChange={(e) => setEditText(e.target.value)}
                       onKeyDown={(e) => e.key === "Enter" && handleSaveEdit(message._id)}
                       onBlur={() => handleSaveEdit(message._id)}
-                      className="w-full px-2 py-1 text-black rounded-md border border-gray-300 focus:outline-none"
+                      className="w-full px-2 py-1 text-base-content rounded-md border border-gray-300 focus:outline-none"
                       autoFocus
                     />
                   ) : (
@@ -162,7 +162,6 @@ const ChatContainer = () => {
                     <div className="relative">
                       <button
                         onClick={() => toggleDropdown(message._id)}
-                        className="text-base-content"
                       >
                         <ChevronDown size={18} />
                       </button>
