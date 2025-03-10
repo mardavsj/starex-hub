@@ -115,3 +115,45 @@ export const editMessage = async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 };
+
+export const getChatHistory = async (req, res) => {
+    try {
+        const userId = req.user._id;
+
+        // Find messages where the user is sender or receiver
+        const messages = await Message.find({
+            $or: [{ senderId: userId }, { receiverId: userId }]
+        }).sort({ createdAt: -1 });
+
+        // Extract unique user IDs
+        const uniqueUserIds = [...new Set(messages.flatMap(msg => [msg.senderId.toString(), msg.receiverId.toString()]))];
+
+        // Exclude the logged-in user
+        const filteredUserIds = uniqueUserIds.filter(id => id !== userId.toString());
+
+        // Fetch user details
+        const users = await User.find({ _id: { $in: filteredUserIds } })
+            .select("_id fullName profilePic enrollmentNo");
+
+        // Fetch corresponding enrollment records
+        const enrollmentNos = users.map(user => user.enrollmentNo);
+        const enrollments = await Enrollment.find({ enrollmentNo: { $in: enrollmentNos } });
+
+        // Create a role mapping
+        const roleMap = new Map();
+        enrollments.forEach(enrollment => {
+            roleMap.set(enrollment.enrollmentNo, enrollment.role);
+        });
+
+        // Attach roles to users
+        const usersWithRoles = users.map(user => ({
+            ...user.toObject(),
+            role: roleMap.get(user.enrollmentNo) || "Unknown",
+        }));
+
+        res.json(usersWithRoles);
+    } catch (error) {
+        console.error("Error fetching chat history:", error);
+        res.status(500).json({ message: "Failed to fetch chat history" });
+    }
+};

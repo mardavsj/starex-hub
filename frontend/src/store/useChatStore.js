@@ -1,3 +1,4 @@
+
 import { create } from "zustand";
 import toast from "react-hot-toast";
 import { axiosInstance } from "../lib/axios";
@@ -6,9 +7,11 @@ import { useAuthStore } from "./useAuthStore";
 export const useChatStore = create((set, get) => ({
     messages: [],
     users: [],
+    chatHistory: [],
     selectedUser: null,
     isUsersLoading: false,
     isMessagesLoading: false,
+    isChatHistoryLoading: false,
     isSidebarOpen: true,
 
     setIsSidebarOpen: (isOpen) => set({ isSidebarOpen: isOpen }),
@@ -26,11 +29,29 @@ export const useChatStore = create((set, get) => ({
         }
     },
 
+    getChatHistory: async () => {
+        set({ isChatHistoryLoading: true });
+        try {
+            const res = await axiosInstance.get("/messages/chats");
+            set({ chatHistory: res.data });
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Failed to load chat history.");
+        } finally {
+            set({ isChatHistoryLoading: false });
+        }
+    },
+
     getMessages: async (userId) => {
         set({ isMessagesLoading: true });
         try {
             const res = await axiosInstance.get(`/messages/${userId}`);
             set({ messages: res.data });
+
+            const existingChat = get().chatHistory.find(chat => chat._id === userId);
+            if (!existingChat) {
+                const user = get().users.find(user => user._id === userId);
+                if (user) set({ chatHistory: [...get().chatHistory, user] });
+            }
         } catch (error) {
             toast.error(error.response?.data?.message || "Failed to load messages.");
         } finally {
@@ -39,10 +60,16 @@ export const useChatStore = create((set, get) => ({
     },
 
     sendMessage: async (messageData) => {
-        const { selectedUser, messages } = get();
+        const { selectedUser, messages, chatHistory } = get();
+        if (!selectedUser) return;
+
         try {
             const res = await axiosInstance.post(`/messages/send/${selectedUser._id}`, messageData);
             set({ messages: [...messages, res.data] });
+
+            if (!chatHistory.some(chat => chat._id === selectedUser._id)) {
+                set({ chatHistory: [...chatHistory, selectedUser] });
+            }
         } catch (error) {
             toast.error(error.response?.data?.message || "Failed to send message.");
         }
@@ -77,15 +104,16 @@ export const useChatStore = create((set, get) => ({
     },
 
     subscribeToMessages: () => {
-        const { selectedUser } = get();
-        if (!selectedUser) return;
-
         const socket = useAuthStore.getState().socket;
 
         socket.on("newMessage", (newMessage) => {
-            if (newMessage.senderId !== selectedUser._id && newMessage.receiverId !== selectedUser._id) return;
-
             set({ messages: [...get().messages, newMessage] });
+
+            const existingChat = get().chatHistory.find(chat => chat._id === newMessage.senderId);
+            if (!existingChat) {
+                const user = get().users.find(user => user._id === newMessage.senderId);
+                if (user) set({ chatHistory: [...get().chatHistory, user] });
+            }
         });
 
         socket.on("messageDeleted", (messageId) => {
