@@ -101,7 +101,7 @@ const ChatContainer = () => {
   };
 
   return (
-    <div className="flex-1 flex flex-col overflow-auto bg-primary/5">
+    <div className="flex-1 flex flex-col overflow-auto">
       <ChatHeader />
 
       {isMessagesLoading ? (

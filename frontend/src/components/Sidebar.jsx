@@ -134,10 +134,29 @@ const Sidebar = () => {
                 ))}
 
                 {displayedUsers.length === 0 && (
-                    <div className="text-center text-gray-500 py-4">
-                        {activeTab === "myChats" ? "No chats yet" : "No users available"}
+                    <div className="text-center h-full flex flex-1 flex-col items-center justify-center">
+                        <span>
+                            {searchTerm
+                                ? activeTab === "myChats"
+                                    ? "No chat found!"
+                                    : "No user found!"
+                                : showOnlineOnly
+                                    ? "No online users currently!"
+                                    : activeTab === "myChats"
+                                        ? "No chats yet!"
+                                        : "No users found!"}
+                        </span>
+                        {activeTab === "myChats" && !searchTerm && !showOnlineOnly && (
+                            <button
+                                onClick={() => setActiveTab("allContacts")}
+                                className="mt-2 px-10 py-2 text-primary bg-primary/20 rounded-md hover:bg-primary/30 transition"
+                            >
+                                Get Started
+                            </button>
+                        )}
                     </div>
                 )}
+
             </div>
         </aside>
     );
