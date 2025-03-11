@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useChatStore } from "../store/useChatStore";
 import SidebarSkeleton from "./skeletons/SidebarSkeleton";
-import { GraduationCap, BriefcaseBusiness } from "lucide-react";
+import { GraduationCap, BriefcaseBusiness, Search } from "lucide-react";
 import { useAuthStore } from "../store/useAuthStore";
 
 const Sidebar = () => {
@@ -14,6 +14,7 @@ const Sidebar = () => {
     const [showOnlineOnly, setShowOnlineOnly] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
     const [activeTab, setActiveTab] = useState("myChats");
+    const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
         getUsers();
@@ -39,7 +40,9 @@ const Sidebar = () => {
         chatHistory?.some(chat => chat._id === user._id)
     );
 
-    const displayedUsers = activeTab === "myChats" ? myChats : filteredUsers;
+    const displayedUsers = (activeTab === "myChats" ? myChats : filteredUsers).filter(user =>
+        user.fullName.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     const handleUserSelect = (user) => {
         setSelectedUser(user);
@@ -52,34 +55,50 @@ const Sidebar = () => {
 
     return (
         <aside className={`h-full w-full lg:w-96 border-r border-base-300 flex flex-col transition-all duration-200 ${!isSidebarOpen ? "hidden" : ""}`}>
-            <div className="border-b border-base-300 w-full flex items-center justify-between p-2.5">
-                <div className="flex gap-4">
+            <div className="border-b border-base-300 w-full flex items-center justify-between ">
+                <div className="relative flex w-full">
                     <button
-                        className={`font-medium text-sm ${activeTab === "myChats" ? "text-primary border-b-2 border-primary" : "text-gray-500"}`}
+                        className={`flex-1 font-medium text-sm py-2 transition-colors relative ${activeTab === "myChats" ? "text-primary" : "text-base-content/60"
+                            }`}
                         onClick={() => setActiveTab("myChats")}
                     >
                         My Chats
                     </button>
                     <button
-                        className={`font-medium text-sm ${activeTab === "allContacts" ? "text-primary border-b-2 border-primary" : "text-gray-500"}`}
+                        className={`flex-1 font-medium text-sm py-2 transition-colors relative ${activeTab === "allContacts" ? "text-primary" : "text-base-content/60"
+                            }`}
                         onClick={() => setActiveTab("allContacts")}
                     >
                         All Contacts
                     </button>
+
+                    <div
+                        className={`absolute bottom-0 h-0.5 bg-primary transition-all duration-300 ${activeTab === "myChats" ? "left-0 w-1/2" : "left-1/2 w-1/2"
+                            }`}
+                    />
                 </div>
             </div>
 
-            <div className="border-b border-base-300 p-2.5 flex items-center justify-between">
+            <div className="border-b border-base-300 p-2 flex items-center gap-2">
+                <div className="relative flex-1">
+                    <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 size-4 text-base-content/60" />
+                    <input
+                        type="text"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        placeholder="Search users by name..."
+                        className="w-full pl-8 pr-3 py-1.5 text-sm focus:outline-none text-base-content placeholder:text-base-content/60 bg-transparent"
+                    />
+                </div>
                 <label className="cursor-pointer flex items-center gap-1">
                     <input
                         type="checkbox"
                         checked={showOnlineOnly}
                         onChange={(e) => setShowOnlineOnly(e.target.checked)}
-                        className="checkbox scale-90"
+                        className="checkbox size-3.5 border-base-content/60"
                     />
-                    <span className="text-sm">Show online only</span>
+                    <span className="text-sm text-base-content/60">Show online only</span>
                 </label>
-                <span className="text-xs text-gray-500">({onlineUsers.length - 1} online)</span>
             </div>
 
             <div className="overflow-y-auto flex-1 w-full py-3">
