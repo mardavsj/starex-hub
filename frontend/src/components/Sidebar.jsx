@@ -54,18 +54,18 @@ const Sidebar = () => {
     if (isUsersLoading) return <SidebarSkeleton />;
 
     return (
-        <aside className={`h-full w-full lg:w-96 border-r border-base-300 flex flex-col transition-all duration-200 ${!isSidebarOpen ? "hidden" : ""}`}>
-            <div className="border-b border-base-300 w-full flex items-center justify-between ">
+        <aside className={`h-full w-full lg:w-96 border-r border-base-content/30 flex flex-col transition-all duration-200 ${!isSidebarOpen ? "hidden" : ""}`}>
+            <div className="border-b border-base-content/30 w-full flex items-center justify-between ">
                 <div className="relative flex w-full">
                     <button
-                        className={`flex-1 font-medium text-sm py-2 transition-colors relative ${activeTab === "myChats" ? "text-primary" : "text-base-content/60"
+                        className={`flex-1 font-medium text-sm py-2 transition-colors relative ${activeTab === "myChats" ? "text-primary" : "text-base-content/40"
                             }`}
                         onClick={() => setActiveTab("myChats")}
                     >
                         My Chats
                     </button>
                     <button
-                        className={`flex-1 font-medium text-sm py-2 transition-colors relative ${activeTab === "allContacts" ? "text-primary" : "text-base-content/60"
+                        className={`flex-1 font-medium text-sm py-2 transition-colors relative ${activeTab === "allContacts" ? "text-primary" : "text-base-content/40"
                             }`}
                         onClick={() => setActiveTab("allContacts")}
                     >
@@ -79,15 +79,15 @@ const Sidebar = () => {
                 </div>
             </div>
 
-            <div className="border-b border-base-300 p-2 flex items-center gap-2">
+            <div className="border-b border-base-content/30 p-2 flex items-center gap-2">
                 <div className="relative flex-1">
-                    <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 size-4 text-base-content/60" />
+                    <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 size-4 text-base-content/80" />
                     <input
                         type="text"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         placeholder="Search users by name..."
-                        className="w-full pl-8 pr-3 py-1.5 text-sm focus:outline-none text-base-content placeholder:text-base-content/60 bg-transparent"
+                        className="w-full pl-8 pr-3 py-1.5 text-sm focus:outline-none text-base-content placeholder:text-base-content/80 bg-transparent"
                     />
                 </div>
                 <label className="cursor-pointer flex items-center gap-1">
@@ -95,9 +95,9 @@ const Sidebar = () => {
                         type="checkbox"
                         checked={showOnlineOnly}
                         onChange={(e) => setShowOnlineOnly(e.target.checked)}
-                        className="checkbox size-3.5 border-base-content/60"
+                        className="checkbox size-3.5 border-base-content/80"
                     />
-                    <span className="text-sm text-base-content/60">Show online only</span>
+                    <span className="text-sm text-base-content/80">Show online only</span>
                 </label>
             </div>
 

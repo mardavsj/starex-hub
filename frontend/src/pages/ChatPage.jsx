@@ -40,7 +40,7 @@ const ChatPage = () => {
         <div className="md:h-screen max-h-screen bg-primary/10">
             <div className="flex items-center justify-center pt-16">
                 <div className="bg-base-100 rounded-lg shadow-cl w-full h-[calc(100vh-4rem)]">
-                    <div className="flex h-full border-t border-base-300 overflow-hidden">
+                    <div className="flex h-full border-t border-base-content/30 overflow-hidden">
                         <Sidebar />
 
                         {!selectedUser ? <NoChatSelected /> : <ChatContainer />}
