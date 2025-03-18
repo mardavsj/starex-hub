@@ -22,6 +22,18 @@ const Sidebar = () => {
     }, [getUsers, getChatHistory]);
 
     useEffect(() => {
+        const socket = useAuthStore.getState().socket;
+
+        socket.on("messageReceived", () => {
+            getChatHistory();
+        });
+
+        return () => {
+            socket.off("messageReceived");
+        };
+    }, [getChatHistory]);
+
+    useEffect(() => {
         const handleResize = () => {
             setIsMobile(window.innerWidth < 1024);
         };

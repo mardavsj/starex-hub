@@ -8,24 +8,20 @@ export const getUsersForSidebar = async (req, res) => {
     try {
         const loggedInUserId = req.user._id;
 
-        // Fetch all users except logged-in user
         const users = await User.find({ _id: { $ne: loggedInUserId } })
-            .select("fullName profilePic enrollmentNo"); // Include enrollmentNo to match Enrollment
+            .select("fullName profilePic enrollmentNo");
 
-        // Fetch corresponding enrollment records
         const enrollmentNos = users.map(user => user.enrollmentNo);
         const enrollments = await Enrollment.find({ enrollmentNo: { $in: enrollmentNos } });
 
-        // Create a map of enrollmentNo -> role
         const roleMap = new Map();
         enrollments.forEach(enrollment => {
             roleMap.set(enrollment.enrollmentNo, enrollment.role);
         });
 
-        // Attach role to each user
         const usersWithRoles = users.map(user => ({
             ...user.toObject(),
-            role: roleMap.get(user.enrollmentNo) || "Unknown", // Default to "Unknown" if no role found
+            role: roleMap.get(user.enrollmentNo) || "Unknown",
         }));
 
         res.status(200).json(usersWithRoles);
@@ -120,32 +116,25 @@ export const getChatHistory = async (req, res) => {
     try {
         const userId = req.user._id;
 
-        // Find messages where the user is sender or receiver
         const messages = await Message.find({
             $or: [{ senderId: userId }, { receiverId: userId }]
         }).sort({ createdAt: -1 });
 
-        // Extract unique user IDs
         const uniqueUserIds = [...new Set(messages.flatMap(msg => [msg.senderId.toString(), msg.receiverId.toString()]))];
 
-        // Exclude the logged-in user
         const filteredUserIds = uniqueUserIds.filter(id => id !== userId.toString());
 
-        // Fetch user details
         const users = await User.find({ _id: { $in: filteredUserIds } })
             .select("_id fullName profilePic enrollmentNo");
 
-        // Fetch corresponding enrollment records
         const enrollmentNos = users.map(user => user.enrollmentNo);
         const enrollments = await Enrollment.find({ enrollmentNo: { $in: enrollmentNos } });
 
-        // Create a role mapping
         const roleMap = new Map();
         enrollments.forEach(enrollment => {
             roleMap.set(enrollment.enrollmentNo, enrollment.role);
         });
-
-        // Attach roles to users
+        
         const usersWithRoles = users.map(user => ({
             ...user.toObject(),
             role: roleMap.get(user.enrollmentNo) || "Unknown",

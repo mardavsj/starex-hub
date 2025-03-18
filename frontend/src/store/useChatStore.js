@@ -1,4 +1,3 @@
-
 import { create } from "zustand";
 import toast from "react-hot-toast";
 import { axiosInstance } from "../lib/axios";
@@ -65,7 +64,16 @@ export const useChatStore = create((set, get) => ({
 
         try {
             const res = await axiosInstance.post(`/messages/send/${selectedUser._id}`, messageData);
-            set({ messages: [...messages, res.data] });
+            const newMessage = res.data;
+
+            set({ messages: [...messages, newMessage] });
+
+            const socket = useAuthStore.getState().socket;
+            socket.emit("newMessage", {
+                senderId: useAuthStore.getState().authUser._id,
+                receiverId: selectedUser._id,
+                message: newMessage,
+            });
 
             if (!chatHistory.some(chat => chat._id === selectedUser._id)) {
                 set({ chatHistory: [...chatHistory, selectedUser] });
@@ -74,7 +82,7 @@ export const useChatStore = create((set, get) => ({
             toast.error(error.response?.data?.message || "Failed to send message.");
         }
     },
-
+    
     deleteMessage: async (messageId) => {
         try {
             await axiosInstance.delete(`/messages/delete/${messageId}`);
@@ -102,17 +110,33 @@ export const useChatStore = create((set, get) => ({
             toast.error(error.response?.data?.message || "Failed to edit message.");
         }
     },
-
+    
     subscribeToMessages: () => {
         const socket = useAuthStore.getState().socket;
 
         socket.on("newMessage", (newMessage) => {
             set({ messages: [...get().messages, newMessage] });
 
-            const existingChat = get().chatHistory.find(chat => chat._id === newMessage.senderId);
-            if (!existingChat) {
-                const user = get().users.find(user => user._id === newMessage.senderId);
-                if (user) set({ chatHistory: [...get().chatHistory, user] });
+            const { chatHistory, users } = get();
+            const chatExists = chatHistory.some(chat => chat._id === newMessage.senderId);
+
+            if (!chatExists) {
+                const user = users.find(user => user._id === newMessage.senderId);
+                if (user) {
+                    set({ chatHistory: [...chatHistory, user] });
+                }
+            }
+        });
+
+        socket.on("messageReceived", ({ senderId }) => {
+            const { chatHistory, users } = get();
+            const chatExists = chatHistory.some(chat => chat._id === senderId);
+
+            if (!chatExists) {
+                const user = users.find(user => user._id === senderId);
+                if (user) {
+                    set({ chatHistory: [...chatHistory, user] });
+                }
             }
         });
 
@@ -128,7 +152,7 @@ export const useChatStore = create((set, get) => ({
             });
         });
     },
-
+    
     unsubscribeFromMessages: () => {
         const socket = useAuthStore.getState().socket;
         socket.off("newMessage");
