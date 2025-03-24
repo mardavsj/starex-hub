@@ -27,18 +27,41 @@ io.on("connection", (socket) => {
     }
 
     socket.on("newMessage", ({ senderId, receiverId, message }) => {
-        console.log("New message received from:", senderId);
-        io.emit("messageReceived", { senderId, receiverId, message });
+        console.log("New message from:", senderId, "to:", receiverId);
+
+        const receiverSocketId = getReceiverSocketId(receiverId);
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("messageReceived", { senderId, receiverId, message });
+        }
     });
 
-    socket.on("editMessage", ({ messageId, newText }) => {
+    socket.on("messagesSeen", ({ senderId, receiverId, messageIds }) => {
+        console.log(`🔹 Sending seen update to sender: ${senderId}`);
+
+        const senderSocketId = getReceiverSocketId(senderId);
+        if (senderSocketId) {
+            io.to(senderSocketId).emit("messagesSeen", { messageIds });
+        }
+    });
+
+    socket.on("editMessage", ({ messageId, senderId, receiverId, newText }) => {
         console.log("Editing message:", messageId, "New Text:", newText);
-        io.emit("messageEdited", { messageId, newText });
+
+        const receiverSocketId = getReceiverSocketId(receiverId);
+        const senderSocketId = getReceiverSocketId(senderId);
+
+        if (receiverSocketId) io.to(receiverSocketId).emit("messageEdited", { messageId, newText });
+        if (senderSocketId) io.to(senderSocketId).emit("messageEdited", { messageId, newText });
     });
 
-    socket.on("deleteMessage", (messageId) => {
+    socket.on("deleteMessage", ({ messageId, senderId, receiverId }) => {
         console.log("Deleting message:", messageId);
-        io.emit("messageDeleted", messageId);
+
+        const receiverSocketId = getReceiverSocketId(receiverId);
+        const senderSocketId = getReceiverSocketId(senderId);
+
+        if (receiverSocketId) io.to(receiverSocketId).emit("messageDeleted", messageId);
+        if (senderSocketId) io.to(senderSocketId).emit("messageDeleted", messageId);
     });
 
     socket.on("disconnect", () => {

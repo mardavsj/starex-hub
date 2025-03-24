@@ -61,7 +61,13 @@ export const sendMessage = async (req, res) => {
             imageUrl = uploadResponse.secure_url;
         }
 
-        const newMessage = new Message({ senderId, receiverId, text, image: imageUrl });
+        const newMessage = new Message({
+            senderId,
+            receiverId,
+            text,
+            image: imageUrl,
+            status: "sent",
+        });
         await newMessage.save();
 
         const receiverSocketId = getReceiverSocketId(receiverId);
@@ -69,6 +75,36 @@ export const sendMessage = async (req, res) => {
 
         res.status(201).json(newMessage);
     } catch (error) {
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+export const markMessagesAsSeen = async (req, res) => {
+    try {
+        const { messageIds } = req.body;
+
+        if (!messageIds || messageIds.length === 0) {
+            return res.status(400).json({ message: "No messages provided for updating." });
+        }
+
+        console.log(`🔹 Marking messages as seen: ${messageIds}`);
+
+        const messages = await Message.updateMany(
+            { _id: { $in: messageIds }, status: { $ne: "seen" } },
+            { $set: { status: "seen", updatedAt: new Date() } }
+        );
+
+        console.log(`🔹 Modified Count: ${messages.modifiedCount}`);
+
+        if (messages.modifiedCount === 0) {
+            console.log("⚠️ No messages were updated.");
+            return res.status(200).json({ message: "No new messages to update" });
+        }
+
+        res.status(200).json({ message: "Messages marked as seen" });
+
+    } catch (error) {
+        console.error("❌ Error updating message status: ", error);
         res.status(500).json({ error: "Internal server error" });
     }
 };
@@ -105,7 +141,11 @@ export const editMessage = async (req, res) => {
 
         if (!message) return res.status(404).json({ error: "Message not found or unauthorized" });
 
-        io.emit("messageEdited", message);
+        io.emit("messageEdited", {
+            messageId: message._id,
+            newText: message.text 
+        });
+
         res.status(200).json(message);
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });
@@ -134,7 +174,7 @@ export const getChatHistory = async (req, res) => {
         enrollments.forEach(enrollment => {
             roleMap.set(enrollment.enrollmentNo, enrollment.role);
         });
-        
+
         const usersWithRoles = users.map(user => ({
             ...user.toObject(),
             role: roleMap.get(user.enrollmentNo) || "Unknown",
