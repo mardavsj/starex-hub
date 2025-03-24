@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { Trash2, Loader, Edit2, ChevronDown } from "lucide-react";
+import { Trash2, Loader, Edit2, ChevronDown, Check, CheckCheck } from "lucide-react";
 import { useChatStore } from "../store/useChatStore";
 import { useAuthStore } from "../store/useAuthStore";
 import { formatMessageTime } from "../lib/utils";
-
 import ChatHeader from "./ChatHeader";
 import MessageInput from "./MessageInput";
 import MessageSkeleton from "./skeletons/MessageSkeleton";
@@ -18,9 +17,10 @@ const ChatContainer = () => {
     unsubscribeFromMessages,
     deleteMessage,
     editMessage,
+    markMessagesAsSeen,
   } = useChatStore();
 
-  const { authUser } = useAuthStore();
+  const { authUser, socket } = useAuthStore();
   const messageEndRef = useRef(null);
   const dropdownRef = useRef(null);
   const editBoxRef = useRef(null);
@@ -31,17 +31,30 @@ const ChatContainer = () => {
   const [openDropdownId, setOpenDropdownId] = useState(null);
 
   useEffect(() => {
+    if (!selectedUser?._id) return;
     getMessages(selectedUser._id);
     subscribeToMessages();
 
     return () => unsubscribeFromMessages();
-  }, [selectedUser._id, getMessages, subscribeToMessages, unsubscribeFromMessages]);
+  }, [getMessages, selectedUser._id, subscribeToMessages, unsubscribeFromMessages]);
 
   useEffect(() => {
-    if (messageEndRef.current && messages) {
+    if (messageEndRef.current) {
       messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
+
+  useEffect(() => {
+    if (!selectedUser?._id || !messages.length) return;
+
+    const unseenMessages = messages.filter(
+      (msg) => msg.senderId === selectedUser._id && msg.status !== "seen"
+    );
+
+    if (unseenMessages.length > 0) {
+      markMessagesAsSeen(selectedUser._id);
+    }
+  }, [authUser._id, markMessagesAsSeen, messages, selectedUser._id, socket]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -159,34 +172,23 @@ const ChatContainer = () => {
                   </time>
 
                   {message.senderId === authUser._id && (
-                    <div className="relative">
-                      <button
-                        onClick={() => toggleDropdown(message._id)}
-                      >
+                    <div className="relative flex flex-col items-center">
+                      <button onClick={() => toggleDropdown(message._id)}>
                         <ChevronDown size={18} />
                       </button>
 
+                      <span>{message.status === "seen" ? <CheckCheck size={12} /> : <Check size={12} />}</span>
+
                       {openDropdownId === message._id && (
-                        <div ref={dropdownRef} className="absolute top-10 right-0 bg-base-200 rounded-lg shadow-md p-2 grid sm:flex-row sm:w-60 w-44 z-10">
-                          <button
-                            onClick={() => handleEditMessage(message)}
-                            className="flex text-base-content items-center space-x-2 hover:bg-primary/25 rounded-lg p-2"
-                          >
+                        <div ref={dropdownRef} className="absolute top-10 right-0 rounded-lg bg-primary/15 p-2 grid sm:flex-row sm:w-60 w-44 z-10">
+                          <button onClick={() => handleEditMessage(message)} className="flex text-base-content items-center space-x-2 hover:bg-primary/25 rounded-lg p-2">
                             <Edit2 size={18} />
-                            <span className="inline text-start">Edit message</span>
+                            <span>Edit message</span>
                           </button>
 
-                          <button
-                            onClick={() => handleDeleteMessage(message._id)}
-                            className="text-red-500 flex items-center space-x-2 hover:bg-red-500/15 rounded-lg p-2"
-                            disabled={loadingMessages[message._id]}
-                          >
-                            {loadingMessages[message._id] ? (
-                              <Loader size={18} className="animate-spin" />
-                            ) : (
-                              <Trash2 size={18} />
-                            )}
-                            <span className="inline text-start">Delete message</span>
+                          <button onClick={() => handleDeleteMessage(message._id)} className="text-red-500 flex items-center space-x-2 hover:bg-red-500/15 rounded-lg p-2">
+                            {loadingMessages[message._id] ? <Loader size={18} className="animate-spin" /> : <Trash2 size={18} />}
+                            <span>Delete message</span>
                           </button>
                         </div>
                       )}

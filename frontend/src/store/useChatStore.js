@@ -51,6 +51,8 @@ export const useChatStore = create((set, get) => ({
                 const user = get().users.find(user => user._id === userId);
                 if (user) set({ chatHistory: [...get().chatHistory, user] });
             }
+
+            await get().markMessagesAsSeen(userId);
         } catch (error) {
             toast.error(error.response?.data?.message || "Failed to load messages.");
         } finally {
@@ -82,7 +84,7 @@ export const useChatStore = create((set, get) => ({
             toast.error(error.response?.data?.message || "Failed to send message.");
         }
     },
-    
+
     deleteMessage: async (messageId) => {
         try {
             await axiosInstance.delete(`/messages/delete/${messageId}`);
@@ -110,54 +112,71 @@ export const useChatStore = create((set, get) => ({
             toast.error(error.response?.data?.message || "Failed to edit message.");
         }
     },
-    
+
+    markMessagesAsSeen: async (senderId) => {
+        const { messages } = get();
+        const unseenMessages = messages.filter(msg => msg.senderId === senderId && msg.status !== "seen");
+
+        if (unseenMessages.length === 0) return;
+
+        const messageIds = unseenMessages.map(msg => msg._id);
+
+        try {
+            const res = await axiosInstance.put(`/messages/mark-seen`, { messageIds });
+
+            if (res.status === 200) {
+                set({
+                    messages: messages.map(msg =>
+                        messageIds.includes(msg._id) ? { ...msg, status: "seen" } : msg
+                    ),
+                });
+
+                const socket = useAuthStore.getState().socket;
+                const receiverId = useAuthStore.getState().authUser._id;
+
+                socket.emit("messagesSeen", { senderId, receiverId, messageIds });
+            }
+        } catch (error) {
+            console.error("❌ Failed to mark messages as seen:", error.response?.data || error.message);
+        }
+    },
+
     subscribeToMessages: () => {
         const socket = useAuthStore.getState().socket;
 
         socket.on("newMessage", (newMessage) => {
-            set({ messages: [...get().messages, newMessage] });
-
-            const { chatHistory, users } = get();
-            const chatExists = chatHistory.some(chat => chat._id === newMessage.senderId);
-
-            if (!chatExists) {
-                const user = users.find(user => user._id === newMessage.senderId);
-                if (user) {
-                    set({ chatHistory: [...chatHistory, user] });
-                }
-            }
-        });
-
-        socket.on("messageReceived", ({ senderId }) => {
-            const { chatHistory, users } = get();
-            const chatExists = chatHistory.some(chat => chat._id === senderId);
-
-            if (!chatExists) {
-                const user = users.find(user => user._id === senderId);
-                if (user) {
-                    set({ chatHistory: [...chatHistory, user] });
-                }
-            }
+            set((state) => ({ messages: [...state.messages, newMessage] }));
         });
 
         socket.on("messageDeleted", (messageId) => {
-            set({ messages: get().messages.filter((msg) => msg._id !== messageId) });
+            set((state) => ({ messages: state.messages.filter(msg => msg._id !== messageId) }));
         });
 
         socket.on("messageEdited", ({ messageId, newText }) => {
-            set({
-                messages: get().messages.map((msg) =>
+            set((state) => ({
+                messages: state.messages.map(msg =>
                     msg._id === messageId ? { ...msg, text: newText } : msg
                 ),
-            });
+            }));
+        });
+
+        socket.on("messagesSeen", ({ messageIds }) => {
+            console.log("🔹 Messages marked as seen:", messageIds);
+
+            set((state) => ({
+                messages: state.messages.map(msg =>
+                    messageIds.includes(msg._id) ? { ...msg, status: "seen" } : msg
+                ),
+            }));
         });
     },
-    
+
     unsubscribeFromMessages: () => {
         const socket = useAuthStore.getState().socket;
         socket.off("newMessage");
         socket.off("messageDeleted");
         socket.off("messageEdited");
+        socket.off("messagesSeen");
     },
 
     setSelectedUser: (selectedUser) => set({ selectedUser }),
