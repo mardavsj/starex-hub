@@ -93,13 +93,13 @@ const Sidebar = () => {
 
             <div className="border-b border-base-content/30 p-2 flex items-center gap-2">
                 <div className="relative flex-1">
-                    <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 size-4 text-base-content/80" />
+                    <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 size-4 text-base-content/70" />
                     <input
                         type="text"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         placeholder="Search users by name..."
-                        className="w-full pl-8 pr-3 py-1.5 text-sm focus:outline-none text-base-content placeholder:text-base-content/80 bg-transparent"
+                        className="w-full pl-8 pr-3 py-1.5 text-sm focus:outline-none text-base-content placeholder:text-base-content/70 bg-transparent"
                     />
                 </div>
                 <label className="cursor-pointer flex items-center gap-1">
@@ -107,18 +107,18 @@ const Sidebar = () => {
                         type="checkbox"
                         checked={showOnlineOnly}
                         onChange={(e) => setShowOnlineOnly(e.target.checked)}
-                        className="checkbox size-3.5 border-base-content/80"
+                        className="checkbox size-3.5 border-base-content/70"
                     />
-                    <span className="text-sm text-base-content/80">Show online only</span>
+                    <span className="text-sm text-base-content/70">Show online only</span>
                 </label>
             </div>
 
-            <div className="overflow-y-auto flex-1 w-full py-3">
+            <div className="overflow-y-auto flex-1 w-full">
                 {displayedUsers.map((user) => (
                     <button
                         key={user._id}
                         onClick={() => handleUserSelect(user)}
-                        className={`w-full p-3 flex items-center gap-3 hover:bg-primary/20 transition-colors ${selectedUser?._id === user._id ? "bg-primary/20" : ""
+                        className={`relative w-full p-3 flex items-center gap-2 hover:bg-primary/15 transition-colors ${selectedUser?._id === user._id ? "bg-primary/15" : ""
                             }`}
                     >
                         <div className="relative mx-auto lg:mx-0">
@@ -142,6 +142,8 @@ const Sidebar = () => {
                                 {onlineUsers.includes(user._id) ? "Online" : "Offline"}
                             </div>
                         </div>
+                        
+                        <div className="absolute w-[90%] bottom-0 border-b border-base-content/5"></div>
                     </button>
                 ))}
 
