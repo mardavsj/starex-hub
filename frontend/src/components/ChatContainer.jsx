@@ -141,7 +141,7 @@ const ChatContainer = () => {
               </div>
 
               <div
-                className={`chat-bubble p-2 md:gap-4 gap-1 rounded-lg max-w-[80%] flex flex-col items-start relative 
+                className={`chat-bubble p-2 rounded-2xl max-w-[80%] flex flex-col items-start relative 
                   ${message.senderId === authUser._id ? "bg-primary text-primary-content" : "bg-base-200 text-base-content"}
                 `}
               >
@@ -167,20 +167,20 @@ const ChatContainer = () => {
                     <p onDoubleClick={() => handleEditMessage(message)}>{message.text}</p>
                   )}
 
-                  <time className="md:text-[11px] text-[9px] opacity-50 whitespace-nowrap justify-self-end self-end">
+                  <time className="md:text-[11px] text-[9px] opacity-50 whitespace-nowrap self-start">
                     {formatMessageTime(message.createdAt)}
                   </time>
 
                   {message.senderId === authUser._id && (
-                    <div className="relative flex flex-col items-center">
-                      <button onClick={() => toggleDropdown(message._id)}>
+                      <div className="relative flex flex-col items-center">
+                      <button onClick={() => toggleDropdown(message._id)} className="hover:scale-125 duration-200 ease-in-out">
                         <ChevronDown size={18} />
                       </button>
 
-                      <span>{message.status === "seen" ? <CheckCheck size={12} /> : <Check size={12} />}</span>
+                      <span>{message.status === "seen" ? <CheckCheck size={13} /> : <Check size={13} />}</span>
 
                       {openDropdownId === message._id && (
-                        <div ref={dropdownRef} className="absolute top-10 right-0 rounded-lg bg-primary/15 p-2 grid sm:flex-row sm:w-60 w-44 z-10">
+                        <div ref={dropdownRef} className="absolute top-10 right-0 rounded-lg bg-base-200 p-2 grid sm:flex-row sm:w-60 w-44 z-10">
                           <button onClick={() => handleEditMessage(message)} className="flex text-base-content items-center space-x-2 hover:bg-primary/25 rounded-lg p-2">
                             <Edit2 size={18} />
                             <span>Edit message</span>

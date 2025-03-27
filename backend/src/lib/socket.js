@@ -30,8 +30,13 @@ io.on("connection", (socket) => {
         console.log("New message from:", senderId, "to:", receiverId);
 
         const receiverSocketId = getReceiverSocketId(receiverId);
+        const senderSocketId = getReceiverSocketId(senderId);
+
         if (receiverSocketId) {
             io.to(receiverSocketId).emit("messageReceived", { senderId, receiverId, message });
+        }
+        if (senderSocketId) {
+            io.to(senderSocketId).emit("messageReceived", { senderId, receiverId, message });
         }
     });
 

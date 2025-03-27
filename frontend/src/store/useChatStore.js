@@ -145,7 +145,19 @@ export const useChatStore = create((set, get) => ({
         const socket = useAuthStore.getState().socket;
 
         socket.on("newMessage", (newMessage) => {
-            set((state) => ({ messages: [...state.messages, newMessage] }));
+            set((state) => {
+                const { selectedUser } = useChatStore.getState();
+                const { authUser } = useAuthStore.getState();
+
+                if (
+                    (newMessage.senderId === selectedUser?._id && newMessage.receiverId === authUser._id) ||
+                    (newMessage.senderId === authUser._id && newMessage.receiverId === selectedUser?._id)
+                ) {
+                    return { messages: [...state.messages, newMessage] };
+                }
+
+                return state;
+            });
         });
 
         socket.on("messageDeleted", (messageId) => {
