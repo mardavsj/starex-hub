@@ -29,7 +29,6 @@ export const sendOtp = async (req, res) => {
             return res.status(400).json({ message: "Invalid Enrollment Number" });
         }
 
-
         const otpCode = crypto.randomInt(100000, 999999).toString();
         const otpExpiry = Date.now() + 10 * 60 * 1000;
 
@@ -58,55 +57,48 @@ export const signup = async (req, res) => {
             return res.status(400).json({ message: "All fields are required" });
         }
 
-        // Step 1: Check OTP Exists & Not Expired
         const otpRecord = await OTP.findOne({ email });
         if (!otpRecord) {
             return res.status(400).json({ message: "OTP not found, please request a new one." });
         }
 
-        // Compare OTP (Stored OTP is hashed)
         const isOtpValid = await bcrypt.compare(otp, otpRecord.otp);
         if (!isOtpValid || otpRecord.expiresAt < Date.now()) {
             return res.status(400).json({ message: "Invalid or expired OTP" });
         }
 
-        // Step 2: Check if User Already Exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ message: "Email already exists" });
         }
 
-        // Step 3: Validate Enrollment Number
         const enrollmentData = await Enrollment.findOne({ enrollmentNo });
         if (!enrollmentData) {
             return res.status(400).json({ message: "Invalid Enrollment Number" });
         }
 
-        // Step 4: Hash Password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // Step 5: Create User
         const newUser = new User({
             enrollmentNo,
             fullName: enrollmentData.fullName,
             email,
             password: hashedPassword,
+            role: enrollmentData.role
         });
 
-        // Step 6: Save User & Generate Token
         await newUser.save();
         generateToken(newUser._id, res);
 
-        // Step 7: Delete OTP Record After Successful Signup
         await OTP.deleteOne({ email });
 
-        // Step 8: Send Response
         res.status(201).json({
             _id: newUser._id,
             fullName: newUser.fullName,
             email: newUser.email,
             profilePic: newUser.profilePic,
+            role: newUser.role
         });
 
     } catch (error) {
@@ -162,10 +154,15 @@ export const forgotPassword = async (req, res) => {
         }
 
         const resetToken = crypto.randomBytes(20).toString("hex");
-        user.resetPasswordToken = resetToken;
-        user.resetPasswordExpires = Date.now() + 3600000;
 
-        await user.save();
+        await User.findByIdAndUpdate(
+            user._id,
+            {
+                resetPasswordToken: resetToken,
+                resetPasswordExpires: Date.now() + 3600000
+            },
+            { new: true, runValidators: false }
+        );
 
         const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
         const message = `
@@ -188,15 +185,14 @@ export const resetPassword = async (req, res) => {
     const { password } = req.body;
 
     try {
-
-        console.log("Received token:", token)
+        console.log("Received token:", token);
 
         const user = await User.findOne({
             resetPasswordToken: token,
             resetPasswordExpires: { $gt: Date.now() },
         });
 
-        console.log("User found:", user)
+        console.log("User found:", user);
 
         if (!user) {
             return res.status(400).json({ message: "Invalid or expired token" });
@@ -204,10 +200,11 @@ export const resetPassword = async (req, res) => {
 
         const salt = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(password, salt);
+
         user.resetPasswordToken = undefined;
         user.resetPasswordExpires = undefined;
 
-        await user.save();
+        await user.updateOne({ password: user.password, resetPasswordToken: undefined, resetPasswordExpires: undefined });
 
         res.status(200).json({ message: "Password updated successfully" });
     } catch (error) {

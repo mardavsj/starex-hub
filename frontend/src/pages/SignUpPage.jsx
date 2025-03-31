@@ -13,7 +13,7 @@ const SignUpPage = () => {
   const [formData, setFormData] = useState({
     enrollmentNo: "",
     email: "",
-    password: "",
+    password: ""
   });
 
   const { signup, isSigningUp } = useAuthStore();
@@ -34,8 +34,12 @@ const SignUpPage = () => {
 
     const response = await signup(formData);
 
+    console.log("Signup Response:", response);
+
     if (response?.otpRequired) {
       setShowOtpForm(true);
+    } else {
+      toast.error("Signup failed. Please try again.");
     }
   };
 
@@ -46,8 +50,13 @@ const SignUpPage = () => {
 
     const response = await signup(formData, otp);
 
-    if (response.success) {
+    console.log("OTP Submit Response:", response);
+
+    if (response?.success) {
+      toast.success("OTP verified successfully!");
       setShowOtpForm(false);
+    } else {
+      toast.error("OTP verification failed. Please try again.");
     }
   };
 
@@ -67,7 +76,7 @@ const SignUpPage = () => {
               </div>
               <h1 className="text-2xl font-bold mt-2">Create Account</h1>
               <p className="text-base-content/60">Get started with your free account</p>
-              <p className="text-[14px] text-red-400">** Name & Email cannot be changed later. Choose wisely. **</p>
+              <p className="text-[14px] text-red-400">** Email cannot be changed later. Choose wisely. **</p>
             </div>
           </div>
 
