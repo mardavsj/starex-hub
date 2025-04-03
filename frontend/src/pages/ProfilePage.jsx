@@ -1,14 +1,21 @@
 import { useState, useEffect } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import { Camera, Mail, User, Hash } from "lucide-react";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const ProfilePage = () => {
   useEffect(() => {
     document.title = "Personalize Your Avatar - Starex Hub Profile";
   }, []);
 
-  const { authUser, isUpdatingProfile, updateProfile } = useAuthStore();
+  const { authUser, isUpdatingProfile, updateProfile, logout } = useAuthStore();
   const [selectedImg, setSelectedImg] = useState(null);
+  const [deletePassword, setDeletePassword] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteConfirmation, setDeleteConfirmation] = useState(false);
+  const navigate = useNavigate();
 
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
@@ -23,6 +30,33 @@ const ProfilePage = () => {
       setSelectedImg(base64Image);
       await updateProfile({ profilePic: base64Image });
     };
+  };
+
+  const handleDeleteAccount = () => {
+    setDeleteConfirmation(true);
+  };
+
+  const handleDeletePasswordSubmit = async (e) => {
+    e.preventDefault();
+    setIsDeleting(true);
+
+    try {
+      const response = await axios.post(
+        "/api/auth/delete-account",
+        { password: deletePassword },
+        { withCredentials: true }
+      );
+
+      toast.success(response.data.message);
+      localStorage.removeItem("authToken");
+      logout();
+
+      navigate("/login");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Error deleting account");
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   return (
@@ -43,13 +77,8 @@ const ProfilePage = () => {
               />
               <label
                 htmlFor="avatar-upload"
-                className={`
-                  absolute bottom-0 right-0 
-                  bg-base-content hover:scale-105
-                  p-2 rounded-full cursor-pointer 
-                  transition-all duration-200
-                  ${isUpdatingProfile ? "animate-pulse pointer-events-none" : ""}
-                `}
+                className={`absolute bottom-0 right-0 bg-base-content hover:scale-105 p-2 rounded-full cursor-pointer transition-all duration-200 ${isUpdatingProfile ? "animate-pulse pointer-events-none" : ""
+                  }`}
               >
                 <Camera className="w-5 h-5 text-base-200" />
                 <input
@@ -91,12 +120,55 @@ const ProfilePage = () => {
               </div>
               <p className="px-4 py-2.5 bg-primary/25 rounded-lg border">{authUser?.email || "N/A"}</p>
             </div>
-
           </div>
         </div>
-        <div className="mt-16 p-10 bg-primary/25 text-center">
+
+        <div className="mt-28 text-center">
+          <button
+            onClick={handleDeleteAccount}
+            className="btn btn-danger md:w-[25%] w-[90%] text-base bg-red-500/15 text-red-500 hover:border-red-500 hover:bg-red-500/20"
+          >
+            Delete Account Permanently
+          </button>
+        </div>
+
+        {deleteConfirmation && (
+          <div className="fixed inset-0 flex justify-center items-center bg-black/60">
+            <div className="bg-base-200 p-10 rounded-lg shadow-xl max-w-md w-full relative border border-base-content/30">
+              <p className="mt-2 text-center">Enter your password to confirm account deletion.</p>
+
+              <form onSubmit={handleDeletePasswordSubmit} className="space-y-4 mt-6">
+                <input
+                  type="password"
+                  value={deletePassword}
+                  onChange={(e) => setDeletePassword(e.target.value)}
+                  placeholder="Enter your password"
+                  className="input input-bordered w-full text-base py-2 px-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent placeholder:text-base-content/50"
+                  required
+                />
+                <div className="flex gap-4 mt-4">
+                  <button
+                    type="submit"
+                    className="btn btn-danger w-full py-2 px-4 text-base text-red-500 font-medium bg-red-500/15 rounded-lg hover:bg-red-500/20 border hover:border-red-500"
+                    disabled={isDeleting}
+                  >
+                    {isDeleting ? "Deleting..." : "Confirm Delete"}
+                  </button>
+                </div>
+              </form>
+              <button
+                onClick={() => setDeleteConfirmation(false)}
+                className="absolute top-2 right-2 text-2xl text-gray-500 hover:scale-125 ease-in-out duration-100 focus:outline-none"
+              >
+                &times;
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div className="mt-4 p-10 bg-primary/25 text-center">
           <h2 className="text-lg font-medium">Account Information</h2>
-          <hr className="max-w-[25%] mx-auto border border-zinc-400 m-4" />
+          <hr className="md:max-w-[25%] mx-auto border border-zinc-400 m-4" />
           <div className="text-sm">
             <div className="flex items-center justify-center gap-2">
               <span>Member Since:</span>

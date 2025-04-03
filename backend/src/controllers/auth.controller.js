@@ -236,6 +236,33 @@ export const updateProfile = async (req, res) => {
     }
 };
 
+export const deleteAccount = async (req, res) => {
+    const { password } = req.body;
+    const userId = req.user.id;
+
+    try {
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        if (!isMatch) {
+            return res.status(400).json({ message: "Incorrect password" });
+        }
+
+        await User.findByIdAndDelete(userId);
+
+        res.status(200).json({ message: "Account deleted successfully" });
+
+    } catch (error) {
+        console.error("Error deleting account:", error);
+        res.status(500).json({ message: "Error deleting account" });
+    }
+};
+
 export const checkAuth = (req, res) => {
     try {
         res.status(200).json(req.user);
