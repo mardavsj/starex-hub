@@ -1,5 +1,7 @@
+
 import { useRef, useState } from "react";
 import { useChatStore } from "../store/useChatStore";
+import { useAuthStore } from "../store/useAuthStore";
 import { Image, Send, X } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -8,6 +10,9 @@ const MessageInput = () => {
     const [imagePreview, setImagePreview] = useState(null);
     const fileInputRef = useRef(null);
     const { sendMessage } = useChatStore();
+    const { authUser, socket } = useAuthStore();
+
+    const [typingTimeout, setTypingTimeout] = useState(null);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -28,6 +33,28 @@ const MessageInput = () => {
         if (fileInputRef.current) fileInputRef.current.value = "";
     };
 
+    const handleTyping = (e) => {
+        setText(e.target.value);
+
+        if (!socket) return;
+
+        socket.emit("typing", {
+            senderId: authUser._id,
+            receiverId: useChatStore.getState().selectedUser._id,
+        });
+
+        if (typingTimeout) clearTimeout(typingTimeout);
+
+        setTypingTimeout(
+            setTimeout(() => {
+                socket.emit("stopTyping", {
+                    senderId: authUser._id,
+                    receiverId: useChatStore.getState().selectedUser._id,
+                });
+            }, 2000)
+        );
+    };
+
     const handleSendMessage = async (e) => {
         e.preventDefault();
         if (!text.trim() && !imagePreview) return;
@@ -41,6 +68,12 @@ const MessageInput = () => {
             setText("");
             setImagePreview(null);
             if (fileInputRef.current) fileInputRef.current.value = "";
+
+            socket.emit("stopTyping", {
+                senderId: authUser._id,
+                receiverId: useChatStore.getState().selectedUser._id,
+            });
+
         } catch (error) {
             console.error("Failed to send message:", error);
         }
@@ -84,7 +117,7 @@ const MessageInput = () => {
                         className="w-full h-10 input input-sm sm:input-md focus:outline-none focus:border-none bg-transparent placeholder:text-base-content/60"
                         placeholder="Type a message..."
                         value={text}
-                        onChange={(e) => setText(e.target.value)}
+                        onChange={handleTyping}
                     />
                     <input
                         type="file"

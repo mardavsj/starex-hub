@@ -69,12 +69,33 @@ io.on("connection", (socket) => {
         if (senderSocketId) io.to(senderSocketId).emit("messageDeleted", messageId);
     });
 
+    socket.on("typing", ({ senderId, receiverId }) => {
+        const receiverSocketId = getReceiverSocketId(receiverId);
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("userTyping", { senderId });
+        }
+    });
+
+    socket.on("stopTyping", ({ senderId, receiverId }) => {
+        const receiverSocketId = getReceiverSocketId(receiverId);
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("userStoppedTyping", { senderId });
+        }
+    });
+
     socket.on("disconnect", () => {
         console.log("A user disconnected:", socket.id);
 
         if (userId && userSocketMap[userId] === socket.id) {
             delete userSocketMap[userId];
             io.emit("getOnlineUsers", Object.keys(userSocketMap));
+
+            for (const receiverId in userSocketMap) {
+                const receiverSocketId = getReceiverSocketId(receiverId);
+                if (receiverSocketId) {
+                    io.to(receiverSocketId).emit("userStoppedTyping", { senderId: userId });
+                }
+            }
         }
     });
 });
