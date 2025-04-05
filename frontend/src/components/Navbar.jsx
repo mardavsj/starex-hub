@@ -18,37 +18,37 @@ const Navbar = () => {
             </Link>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Link to={"/games"} className={`btn btn-sm gap-2 transition-colors`}>
-              <Gamepad2 className="w-4 h-4" />
+          <div className="flex items-center md:gap-2 gap-1.5">
+            <Link to={"/games"} className={`btn btn-sm gap-2 transition-colors bg-primary/20 hover:bg-primary/30 border border-transparent hover:border-primary`}>
+              <Gamepad2 className="size-4" />
               <span className="hidden sm:inline">Games</span>
             </Link>
 
-            <Link to={"/settings"} className={`btn btn-sm gap-2 transition-colors`}>
-              <Palette className="w-4 h-4" />
+            <Link to={"/settings"} className={`btn btn-sm gap-2 transition-colors bg-primary/20 hover:bg-primary/30 border border-transparent hover:border-primary`}>
+              <Palette className="size-4" />
               <span className="hidden sm:inline">Themes</span>
             </Link>
 
             {!authUser && (
-              <Link to={"/login"} className={`btn btn-sm gap-2 transition-colors`}>
-                <User className="w-4 h-4" />
+              <Link to={"/login"} className={`btn btn-sm gap-2 transition-colors bg-primary/20 hover:bg-primary/30 border border-transparent hover:border-primary`}>
+                <User className="size-4" />
                 <span className="hidden sm:inline">Login</span>
               </Link>
             )}
 
             {authUser && (
               <>
-                <Link to={"/chat"} className={`btn btn-sm gap-2`}>
+                <Link to={"/chat"} className={`btn btn-sm gap-2 bg-primary/20 hover:bg-primary/30 border border-transparent hover:border-primary `}>
                   <MessageSquare className="size-4" />
                   <span className="hidden sm:inline">My Chats</span>
                 </Link>
 
-                <Link to={"/profile"} className={`btn btn-sm gap-2`}>
+                <Link to={"/profile"} className={`btn btn-sm gap-2 bg-primary/20 hover:bg-primary/30 border border-transparent hover:border-primary`}>
                   <User className="size-4" />
                   <span className="hidden sm:inline">Profile</span>
                 </Link>
 
-                <button className="flex gap-2 items-center text-red-500 bg-red-500/15 hover:bg-red-500/25 btn btn-sm border-transparent shadow-none hover:border-red-500" onClick={logout}>
+                <button className="flex gap-2 items-center text-red-500 bg-red-500/15 hover:bg-red-500/25 btn btn-sm border border-transparent shadow-none hover:border-red-500" onClick={logout}>
                   <LogOut className="size-4" />
                   <span className="hidden sm:inline">Logout</span>
                 </button>

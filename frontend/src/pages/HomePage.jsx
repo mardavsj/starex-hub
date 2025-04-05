@@ -23,7 +23,7 @@ const HomePage = () => {
             <div className="md:flex max-w-[95%] mx-auto md:mt-16 mt-8 gap-10 items-center justify-center">
               <h3 className="md:text-start md:text-[16px] text-[14px] md:mb-0 mb-6 md:p-0 p-2">Starex Hub is a real-time chat application designed to facilitate instant communication and seamless collaboration among both faculty and students. With its user-friendly interface and robust features, it enables users to connect effortlessly, share ideas, and engage in meaningful discussions. Whether for academic collaborations, group projects, faculty-student interactions, or casual conversations, Starex Hub provides a secure and dynamic space for effective real-time communication, fostering a vibrant and connected educational community.</h3>
               <Link to="/signup">
-                <button className="bg-primary/10 md:text-xl text-primary px-10 py-3 items-center justify-center rounded-lg hover:bg-primary/20 md:font-bold font-semibold md:w-52">
+                <button className="bg-primary/10 md:text-xl text-primary px-10 py-3 items-center justify-center rounded-lg hover:bg-primary/20 md:font-bold font-semibold md:w-52 border border-transparent hover:border-primary">
                   Get Started
                 </button>
               </Link>
