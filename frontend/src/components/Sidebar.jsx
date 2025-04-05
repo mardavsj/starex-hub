@@ -16,6 +16,9 @@ const Sidebar = () => {
     const [activeTab, setActiveTab] = useState("myChats");
     const [searchTerm, setSearchTerm] = useState("");
 
+    const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+    const [selectedImage, setSelectedImage] = useState(null);
+
     useEffect(() => {
         getUsers();
         getChatHistory();
@@ -63,9 +66,15 @@ const Sidebar = () => {
         }
     };
 
+    const handleImageClick = (src) => {
+        setSelectedImage(src);
+        setIsImageModalOpen(true);
+    };
+
     if (isUsersLoading) return <SidebarSkeleton />;
 
     return (
+        <>
         <aside className={`h-full w-full lg:w-96 border-r border-base-content/30 flex flex-col transition-all duration-200 ${!isSidebarOpen ? "hidden" : ""}`}>
             <div className="border-b border-base-content/30 w-full flex items-center justify-between ">
                 <div className="relative flex w-full">
@@ -125,10 +134,14 @@ const Sidebar = () => {
                             <img
                                 src={user.profilePic || "/avatar.png"}
                                 alt={user.name}
-                                className="size-12 object-cover rounded-full"
+                                className="size-12 object-cover rounded-full cursor-pointer hover:scale-105 transition-transform"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleImageClick(user.profilePic || "/avatar.png")
+                                }}
                             />
                             {onlineUsers.includes(user._id) && (
-                                <span className="absolute bottom-0 right-0 size-3 bg-green-500 rounded-full ring-2 ring-gray-900" />
+                                <span className="absolute bottom-0 right-0 size-3 bg-green-500 rounded-full ring-1 ring-gray-900" />
                             )}
                         </div>
 
@@ -142,7 +155,7 @@ const Sidebar = () => {
                                 {onlineUsers.includes(user._id) ? "Online" : "Offline"}
                             </div>
                         </div>
-                        
+
                         <div className="absolute w-[90%] bottom-0 border-b border-base-content/5"></div>
                     </button>
                 ))}
@@ -173,6 +186,20 @@ const Sidebar = () => {
 
             </div>
         </aside>
+            {isImageModalOpen && (
+                <div
+                    className="fixed inset-0 z-50 bg-black bg-opacity-70 flex items-center justify-center"
+                    onClick={() => setIsImageModalOpen(false)}
+                >
+                    <img
+                        src={selectedImage}
+                        alt="Full Profile"
+                        className="md:size-96 size-60 object-cover rounded-xl border border-base-content/30 bg-black"
+                        onClick={(e) => e.stopPropagation()}
+                    />
+                </div>
+            )}
+    </>
     );
 };
 

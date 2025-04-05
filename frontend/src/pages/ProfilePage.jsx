@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuthStore } from "../store/useAuthStore";
-import { Camera, Mail, User, Hash } from "lucide-react";
+import { Camera, Mail, User, Hash, X } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -15,6 +15,7 @@ const ProfilePage = () => {
   const [deletePassword, setDeletePassword] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
+  const [showFullImage, setShowFullImage] = useState(false);
   const navigate = useNavigate();
 
   const handleImageUpload = async (e) => {
@@ -59,7 +60,10 @@ const ProfilePage = () => {
     }
   };
 
+  const profileImage = selectedImg || authUser.profilePic || "/avatar.png";
+
   return (
+    <>
     <div className="min-h-screen bg-primary/10">
       <div className="pt-16">
         <div className="max-w-2xl mx-auto p-6 space-y-8">
@@ -69,15 +73,16 @@ const ProfilePage = () => {
           </div>
 
           <div className="flex flex-col items-center gap-4">
-            <div className="relative">
+            <div className="relative cursor-pointer" onClick={() => setShowFullImage(true)}>
               <img
                 src={selectedImg || authUser.profilePic || "/avatar.png"}
                 alt="Profile"
-                className="size-40 rounded-full object-cover"
+                className="size-40 rounded-full object-cover border border-base-content/30 hover:scale-105 transition-transform"
               />
               <label
                 htmlFor="avatar-upload"
-                className={`absolute bottom-0 right-0 bg-base-content hover:scale-105 p-2 rounded-full cursor-pointer transition-all duration-200 ${isUpdatingProfile ? "animate-pulse pointer-events-none" : ""
+                onClick={(e) => e.stopPropagation()}
+                className={`absolute bottom-0 right-0 bg-base-content hover:scale-110 p-2 rounded-full cursor-pointer transition-transform ${isUpdatingProfile ? "animate-pulse pointer-events-none" : ""
                   }`}
               >
                 <Camera className="w-5 h-5 text-base-200" />
@@ -182,6 +187,24 @@ const ProfilePage = () => {
         </div>
       </div>
     </div>
+      {showFullImage && (
+        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center">
+          <div className="relative max-w-lg w-full p-4">
+            <img
+              src={profileImage}
+              alt="Full Profile"
+              className="w-full h-full rounded-lg border border-base-content/30"
+            />
+            <button
+              onClick={() => setShowFullImage(false)}
+              className="absolute top-2 right-2 text-base-content bg-primary hover:scale-105 transition-transform p-1 rounded-full"
+            >
+              <X className="md:size-6 size-4" />
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
