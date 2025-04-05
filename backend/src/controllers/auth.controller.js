@@ -215,23 +215,39 @@ export const resetPassword = async (req, res) => {
 
 export const updateProfile = async (req, res) => {
     try {
-        const { profilePic } = req.body;
         const userId = req.user._id;
+        const file = req.file;
+        const { removePic } = req.body;
 
-        if (!profilePic) {
-            return res.status(400).json({ message: "Profile pic is required" });
+        let updateData = {};
+
+        if (removePic === "true") {
+            updateData.profilePic = null;
         }
 
-        const uploadResponse = await cloudinary.uploader.upload(profilePic);
+        if (file) {
+            const base64Image = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
+
+            const uploadResponse = await cloudinary.uploader.upload(base64Image, {
+                folder: "avatars",
+            });
+
+            updateData.profilePic = uploadResponse.secure_url;
+        }
+
+        if (!file && removePic !== "true") {
+            return res.status(400).json({ message: "No update provided" });
+        }
+
         const updatedUser = await User.findByIdAndUpdate(
             userId,
-            { profilePic: uploadResponse.secure_url },
+            updateData,
             { new: true }
         );
 
         res.status(200).json(updatedUser);
     } catch (error) {
-        console.log("error in update profile:", error);
+        console.log("Error in updateProfile:", error.message);
         res.status(500).json({ message: "Internal server error" });
     }
 };

@@ -4,6 +4,7 @@ import { Camera, Mail, User, Hash, X } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import imageCompression from "browser-image-compression";
 
 const ProfilePage = () => {
   useEffect(() => {
@@ -22,15 +23,39 @@ const ProfilePage = () => {
     const file = e.target.files[0];
     if (!file) return;
 
-    const reader = new FileReader();
+    try {
+      const compressedFile = await imageCompression(file, {
+        maxSizeMB: 0.5,
+        maxWidthOrHeight: 800,
+        useWebWorker: true,
+      });
 
-    reader.readAsDataURL(file);
+      const formData = new FormData();
+      formData.append("profilePic", compressedFile);
 
-    reader.onload = async () => {
-      const base64Image = reader.result;
-      setSelectedImg(base64Image);
-      await updateProfile({ profilePic: base64Image });
-    };
+      await updateProfile(formData);
+
+      const reader = new FileReader();
+      reader.readAsDataURL(compressedFile);
+      reader.onload = () => setSelectedImg(reader.result);
+    } catch (error) {
+      console.error("Image compression failed:", error);
+      toast.error("Failed to compress image.");
+    }
+  };
+
+  const handleRemoveProfilePic = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("removePic", "true");
+
+      await updateProfile(formData);
+      setSelectedImg(null); // reset local preview
+      toast.success("Profile picture removed!");
+    } catch (error) {
+      console.error("Failed to remove profile picture:", error);
+      toast.error("Could not remove profile picture.");
+    }
   };
 
   const handleDeleteAccount = () => {
@@ -96,6 +121,15 @@ const ProfilePage = () => {
                 />
               </label>
             </div>
+              {authUser?.profilePic && (
+                <button
+                  onClick={handleRemoveProfilePic}
+                  className="mt-2 text-sm text-red-500 hover:underline"
+                  disabled={isUpdatingProfile}
+                >
+                  Remove Profile Picture
+                </button>
+              )}
             <p className="text-sm">
               {isUpdatingProfile ? "Uploading..." : "Click the camera icon to update your photo"}
             </p>
