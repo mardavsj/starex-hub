@@ -127,6 +127,48 @@ export const deleteMessage = async (req, res) => {
     }
 };
 
+export const clearChatForUser = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const { userId: otherUserId } = req.params;
+
+        const messages = await Message.find({
+            $or: [
+                { senderId: userId, receiverId: otherUserId },
+                { senderId: otherUserId, receiverId: userId },
+            ],
+        });
+
+        const deleteIds = [];
+
+        await Promise.all(
+            messages.map(async (msg) => {
+                if (!msg.clearedBy.includes(userId)) {
+                    msg.clearedBy.push(userId);
+                }
+
+                if (
+                    msg.clearedBy.includes(userId.toString()) &&
+                    msg.clearedBy.includes(otherUserId.toString())
+                ) {
+                    deleteIds.push(msg._id);
+                } else {
+                    await msg.save();
+                }
+            })
+        );
+
+        if (deleteIds.length > 0) {
+            await Message.deleteMany({ _id: { $in: deleteIds } });
+        }
+
+        res.status(200).json({ message: "Chat cleared successfully" });
+    } catch (error) {
+        console.error("Error clearing chat:", error);
+        res.status(500).json({ message: "Failed to clear chat" });
+    }
+};
+
 export const editMessage = async (req, res) => {
     try {
         const { messageId } = req.params;

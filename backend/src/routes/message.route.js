@@ -8,6 +8,7 @@ import {
     editMessage,
     getChatHistory,
     markMessagesAsSeen,
+    clearChatForUser,
 } from "../controllers/message.controller.js";
 
 const router = express.Router();
@@ -19,5 +20,6 @@ router.post("/send/:id", protectRoute, sendMessage);
 router.delete("/delete/:messageId", protectRoute, deleteMessage);
 router.put("/edit/:messageId", protectRoute, editMessage);
 router.put("/mark-seen", protectRoute, markMessagesAsSeen);
+router.put("/clear/:userId", protectRoute, clearChatForUser); 
 
 export default router;

@@ -23,6 +23,10 @@ const messageSchema = new mongoose.Schema(
             enum: ["sent", "seen"],
             default: "sent",
         },
+        clearedBy: {
+            type: [mongoose.Schema.Types.ObjectId],
+            default: [],
+        },
     },
     { timestamps: true }
 );

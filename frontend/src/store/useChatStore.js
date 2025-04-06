@@ -130,12 +130,18 @@ export const useChatStore = create((set, get) => {
 
         clearedChats: cleared,
 
-        clearMessagesForUser: () => {
+        clearMessagesForUser: async () => {
             const { selectedUser, clearedChats } = get();
             if (selectedUser?._id) {
-                const updated = { ...clearedChats, [selectedUser._id]: Date.now() };
-                set({ messages: [], clearedChats: updated });
-                localStorage.setItem("clearedChats", JSON.stringify(updated));
+                try {
+                    await axiosInstance.put(`/messages/clear/${selectedUser._id}`);
+
+                    const updated = { ...clearedChats, [selectedUser._id]: Date.now() };
+                    set({ messages: [], clearedChats: updated });
+                    localStorage.setItem("clearedChats", JSON.stringify(updated));
+                } catch (error) {
+                    console.error("Error clearing chat:", error);
+                }
             }
         },
 
