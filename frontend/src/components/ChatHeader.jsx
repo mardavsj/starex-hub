@@ -2,11 +2,14 @@ import { useState } from "react";
 import { X, GraduationCap, BriefcaseBusiness } from "lucide-react";
 import { useAuthStore } from "../store/useAuthStore";
 import { useChatStore } from "../store/useChatStore";
+import ConfirmationModal from "./ConfirmationModal";
+import { GiBroom } from "react-icons/gi";
 
 const ChatHeader = () => {
-    const { selectedUser, setSelectedUser, setIsSidebarOpen } = useChatStore();
+    const { selectedUser, setSelectedUser, setIsSidebarOpen, clearMessagesForUser } = useChatStore();
     const { onlineUsers } = useAuthStore();
     const [isImageOpen, setIsImageOpen] = useState(false);
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
     const getRoleIconWithText = (role) => {
         if (role === "student") {
@@ -24,6 +27,15 @@ const ChatHeader = () => {
             );
         }
         return null;
+    };
+
+    const handleClearChat = () => {
+        setIsConfirmModalOpen(true);
+    };
+
+    const confirmClearChat = () => {
+        clearMessagesForUser();
+        setIsConfirmModalOpen(false);
     };
 
     return (
@@ -49,15 +61,21 @@ const ChatHeader = () => {
                         </div>
                     </div>
 
-                    <button
-                        onClick={() => {
-                            setSelectedUser(null);
-                            setIsSidebarOpen(true);
-                        }}
-                        className="px-2"
-                    >
-                        <X />
-                    </button>
+                    <div className="flex items-center gap-2">
+                        <button onClick={handleClearChat} className="flex items-center justify-center gap-1.5 text-sm py-1 px-2 font-semibold rounded-lg text-red-500 bg-red-500/20 hover:bg-red-500/30 border border-transparent hover:border-red-500">
+                        <span><GiBroom/></span>
+                            Clear Chat
+                        </button>
+                        <button
+                            onClick={() => {
+                                setSelectedUser(null);
+                                setIsSidebarOpen(true);
+                            }}
+                            className="px-2"
+                        >
+                            <X />
+                        </button>
+                    </div>
                 </div>
             </div>
             {
@@ -75,6 +93,11 @@ const ChatHeader = () => {
                     </div>
                 )
             }
+            <ConfirmationModal
+                isOpen={isConfirmModalOpen}
+                onConfirm={confirmClearChat}
+                onCancel={() => setIsConfirmModalOpen(false)}
+            />
         </>
     );
 };

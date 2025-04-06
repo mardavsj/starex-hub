@@ -197,7 +197,7 @@ const ProfilePage = () => {
               </form>
               <button
                 onClick={() => setDeleteConfirmation(false)}
-                className="absolute top-2 right-2 text-2xl text-gray-500 hover:scale-125 ease-in-out duration-100 focus:outline-none"
+                className="absolute top-2 right-2 text-2xl text-primary font-bold hover:scale-125 ease-in-out duration-100 focus:outline-none"
               >
                 &times;
               </button>
