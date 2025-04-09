@@ -19,6 +19,21 @@ const Sidebar = () => {
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
 
+    const markMessagesAsSeenFor = async (userId) => {
+        const { messages } = useChatStore.getState();
+        const unseenIds = messages
+            .filter(msg => msg.senderId === userId && msg.status !== "seen")
+            .map(msg => msg._id);
+
+        if (unseenIds.length > 0) {
+            await fetch("/api/message/mark-seen", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ messageIds: unseenIds }),
+            });
+        }
+    };
+
     useEffect(() => {
         getUsers();
         getChatHistory();
@@ -27,12 +42,12 @@ const Sidebar = () => {
     useEffect(() => {
         const socket = useAuthStore.getState().socket;
 
-        socket.on("messageReceived", () => {
+        socket.on("newMessage", () => {
             getChatHistory();
         });
 
         return () => {
-            socket.off("messageReceived");
+            socket.off("newMessage");
         };
     }, [getChatHistory]);
 
@@ -47,9 +62,18 @@ const Sidebar = () => {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
+    const enrichedUsers = users.map(user => {
+        const chat = chatHistory?.find(c => c._id === user._id);
+        return {
+            ...user,
+            unreadCount: chat?.unreadCount || 0,
+            role: chat?.role || user.role,
+        };
+    });
+
     const filteredUsers = showOnlineOnly
-        ? users.filter(user => onlineUsers.includes(user._id))
-        : users;
+        ? enrichedUsers.filter(user => onlineUsers.includes(user._id))
+        : enrichedUsers;
 
     const myChats = filteredUsers.filter(user =>
         chatHistory?.some(chat => chat._id === user._id)
@@ -59,11 +83,14 @@ const Sidebar = () => {
         user.fullName.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const handleUserSelect = (user) => {
+    const handleUserSelect = async (user) => {
         setSelectedUser(user);
         if (isMobile) {
             setIsSidebarOpen(false);
         }
+
+        await markMessagesAsSeenFor(user._id);
+        getChatHistory();
     };
 
     const handleImageClick = (src) => {
@@ -145,9 +172,19 @@ const Sidebar = () => {
                             )}
                         </div>
 
+                        {user.unreadCount > 0 && (
+                            <div className="absolute right-4 font-bold text-primary text-xs px-2 py-0.5 rounded-full whitespace-nowrap">
+                                {user.unreadCount === 1
+                                    ? "1 new message"
+                                    : `${user.unreadCount > 99 ? "99+" : user.unreadCount} new messages`}
+                            </div>
+                        )}
+
                         <div className="flex-1 text-left min-w-0">
                             <div className="font-medium truncate flex items-center gap-2">
-                                <span>{user.fullName}</span>
+                                <span className={user.unreadCount > 0 ? "font-bold text-primary" : "font-normal"}>
+                                    {user.fullName}
+                                </span>
                                 {user.role === "student" && <GraduationCap className="size-5 text-primary" />}
                                 {user.role === "faculty" && <BriefcaseBusiness className="size-4 text-primary" />}
                             </div>

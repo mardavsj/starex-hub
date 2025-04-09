@@ -26,7 +26,16 @@ export const useChatStore = create((set, get) => {
             set({ isUsersLoading: true });
             try {
                 const res = await axiosInstance.get("/messages/users");
-                set({ users: res.data });
+                const users = res.data;
+
+                const chatMap = Object.fromEntries(get().chatHistory.map(chat => [chat._id, chat]));
+
+                const enrichedUsers = users.map(user => ({
+                    ...user,
+                    unreadCount: chatMap[user._id]?.unreadCount || 0
+                }));
+
+                set({ users: enrichedUsers });
             } catch (error) {
                 toast.error(error.response?.data?.message || "Failed to load users.");
             } finally {

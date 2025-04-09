@@ -202,11 +202,12 @@ export const getChatHistory = async (req, res) => {
             $or: [{ senderId: userId }, { receiverId: userId }]
         }).sort({ createdAt: -1 });
 
-        const uniqueUserIds = [...new Set(messages.flatMap(msg => [msg.senderId.toString(), msg.receiverId.toString()]))];
+        const uniqueUserIds = [...new Set(messages.flatMap(msg => [
+            msg.senderId.toString(),
+            msg.receiverId.toString()
+        ]))].filter(id => id !== userId.toString());
 
-        const filteredUserIds = uniqueUserIds.filter(id => id !== userId.toString());
-
-        const users = await User.find({ _id: { $in: filteredUserIds } })
+        const users = await User.find({ _id: { $in: uniqueUserIds } })
             .select("_id fullName profilePic enrollmentNo");
 
         const enrollmentNos = users.map(user => user.enrollmentNo);
@@ -217,12 +218,33 @@ export const getChatHistory = async (req, res) => {
             roleMap.set(enrollment.enrollmentNo, enrollment.role);
         });
 
-        const usersWithRoles = users.map(user => ({
+        const unreadCounts = await Message.aggregate([
+            {
+                $match: {
+                    receiverId: userId,
+                    status: "sent"
+                }
+            },
+            {
+                $group: {
+                    _id: "$senderId",
+                    count: { $sum: 1 }
+                }
+            }
+        ]);
+
+        const unreadCountMap = new Map();
+        unreadCounts.forEach(({ _id, count }) => {
+            unreadCountMap.set(_id.toString(), count);
+        });
+
+        const usersWithDetails = users.map(user => ({
             ...user.toObject(),
             role: roleMap.get(user.enrollmentNo) || "Unknown",
+            unreadCount: unreadCountMap.get(user._id.toString()) || 0
         }));
 
-        res.json(usersWithRoles);
+        res.json(usersWithDetails);
     } catch (error) {
         console.error("Error fetching chat history:", error);
         res.status(500).json({ message: "Failed to fetch chat history" });
