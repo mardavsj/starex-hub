@@ -14,7 +14,7 @@ const Navbar = () => {
               <div className="hidden size-9 rounded-lg bg-primary/10 md:flex items-center justify-center">
                 <MessageSquare className="w-5 h-5 text-primary"/>
               </div>
-              <h1 className="md:text-lg text-base font-bold">Starex Hub</h1>
+              <h1 className="md:text-lg text-base font-bold">StarX</h1>
             </Link>
           </div>
 

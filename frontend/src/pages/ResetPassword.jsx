@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -6,6 +6,11 @@ import BackgroundAnimation from "../components/BgAnimation";
 import { Loader2 } from "lucide-react";
 
 const ResetPassword = () => {
+
+    useEffect(() => {
+        document.title = 'Reset Password! - Make a new one at StarX';
+    }, []);
+
     const { token } = useParams();
     console.log("Token from URL", token);
 

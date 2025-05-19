@@ -9,7 +9,7 @@ const ChatPage = () => {
     const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
 
     useEffect(() => {
-        document.title = 'Your Chats - Stay Connected on Starex Hub';
+        document.title = 'Your Chats - Stay Connected on StarX';
         window.history.pushState({ selectedUser: selectedUser }, "");
 
         const handlePopState = (e) => {

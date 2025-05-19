@@ -8,7 +8,7 @@ import imageCompression from "browser-image-compression";
 
 const ProfilePage = () => {
   useEffect(() => {
-    document.title = "Personalize Your Avatar - Starex Hub Profile";
+    document.title = "Personalize Your Avatar - StarX Profile";
   }, []);
 
   const { authUser, isUpdatingProfile, updateProfile, logout } = useAuthStore();

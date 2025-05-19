@@ -13,7 +13,7 @@ const SettingsPage = () => {
   const bottomRef = useRef(null);
 
   useEffect(() => {
-    document.title = 'Choose Your Theme - Customize your Starex Hub';
+    document.title = 'Choose Your Theme - Customize your StarX';
   }, []);
 
   return (

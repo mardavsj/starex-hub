@@ -1,10 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import BackgroundAnimation from "../components/BgAnimation";
 import { Loader2 } from "lucide-react";
 
 const ForgotPassword = () => {
+
+    useEffect(() => {
+        document.title = 'Forgot Password? - Get the Reset Link at StarX';
+      }, []);
+
     const [email, setEmail] = useState("");
     const [loading, setLoading] = useState(false);
 

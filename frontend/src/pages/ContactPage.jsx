@@ -3,7 +3,7 @@ import { useEffect } from "react";
 const ContactPage = () => {
 
   useEffect(() => {
-    document.title = 'Contact us - Starex Hub';
+    document.title = 'Contact us - StarX';
   }, []);
 
   return (
@@ -19,9 +19,9 @@ const ContactPage = () => {
         <section className="text-center md:mb-28 mb-20">
           <h2 className="md:text-3xl text-2xl font-bold text-primary md:mb-8 mb-4">Our Contact Details</h2>
           <div className="md:text-md text-sm mb-4">
-            <p>Email: <span className="font-semibold">mardavjadaun113@gmail.com</span></p>
-            <p>Phone: <span className="font-semibold"> | +91 9503501043 | </span></p>
-            <p>Address: <span className="font-semibold">123 Student St, Learn City, EduLand</span></p>
+            <p className="font-semibold">Email: <span className="font-light">mardavjadaun113@gmail.com</span></p>
+            <p className="font-semibold">Phone: <span className="font-light"> | +91 9503501043 | </span></p>
+            <p className="font-semibold">Address: <span className="font-light">NH 48, Vill. Binola, P.O. Bhorakalan, Gurugram, Haryana - 122413</span></p>
           </div>
         </section>
 

@@ -5,7 +5,7 @@ import PauseOnHover from "../components/PauseonHover";
 
 const HomePage = () => {
   useEffect(() => {
-    document.title = "Starex HUB";
+    document.title = "StarX";
   }, []);
 
   return (
@@ -16,12 +16,12 @@ const HomePage = () => {
           <div className="md:max-w-[80%] max-w-[95%] mx-auto md:p-10">
             <div className="text-center">
               <div className="md:text-4xl text-2xl font-semibold md:max-w-[90%] max-w-[95%] mx-auto italic">
-                An initiative by Starex University, empowering innovation & fostering excellence — <span className="font-bold text-primary">Welcome to Starex HUB</span>
+                An initiative by Starex University, empowering innovation & fostering excellence — <span className="font-bold text-primary">Welcome to StarX</span>
               </div>
             </div>
 
             <div className="md:flex max-w-[95%] mx-auto md:mt-16 mt-8 gap-10 items-center justify-center">
-              <h3 className="md:text-start md:text-[16px] text-[14px] md:mb-0 mb-6 md:p-0 p-2">Starex Hub is a real-time chat application designed to facilitate instant communication and seamless collaboration among both faculty and students. With its user-friendly interface and robust features, it enables users to connect effortlessly, share ideas, and engage in meaningful discussions. Whether for academic collaborations, group projects, faculty-student interactions, or casual conversations, Starex Hub provides a secure and dynamic space for effective real-time communication, fostering a vibrant and connected educational community.</h3>
+              <h3 className="md:text-start md:text-[16px] text-[14px] md:mb-0 mb-6 md:p-0 p-2">StarX is a real-time chat application designed to facilitate instant communication and seamless collaboration among both faculty and students. With its user-friendly interface and robust features, it enables users to connect effortlessly, share ideas, and engage in meaningful discussions. Whether for academic collaborations, group projects, faculty-student interactions, or casual conversations, StarX provides a secure and dynamic space for effective real-time communication, fostering a vibrant and connected educational community.</h3>
               <Link to="/signup">
                 <button className="bg-primary/10 md:text-xl text-primary px-10 py-3 items-center justify-center rounded-lg hover:bg-primary/20 md:font-bold font-semibold md:w-52 border border-transparent hover:border-primary">
                   Get Started

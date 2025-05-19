@@ -6,16 +6,16 @@ import Vikash from "../../public/vikash.jpg"
 const AboutUsPage = () => {
 
   useEffect(() => {
-    document.title = 'About us - Starex Hub ';
+    document.title = 'About us - StarX ';
   }, []);
 
   return (
     <div className="py-28 mx-auto md:px-20 px-8 bg-primary/10">
       <div className="container mx-auto md:px-6">
         <section className="text-center mb-16 md:max-w-[75%] mx-auto">
-          <h2 className="md:text-4xl text-2xl font-bold text-primary mb-4">About Starex Hub</h2>
+          <h2 className="md:text-4xl text-2xl font-bold text-primary mb-4">About StarX</h2>
           <p className="md:text-md text-sm mx-auto">
-            Starex Hub is a next-generation chat platform designed exclusively for students to connect, collaborate, and thrive. Our mission is to create a safe, engaging, and resourceful space where students can learn, grow, and communicate with each other in a secure environment. Whether you are preparing for exams, working on group projects, or simply looking to share ideas, Starex Hub is here to support you every step of the way.
+            StareX is a next-generation chat platform designed exclusively for students to connect, collaborate, and thrive. Our mission is to create a safe, engaging, and resourceful space where students can learn, grow, and communicate with each other in a secure environment. Whether you are preparing for exams, working on group projects, or simply looking to share ideas, StarX is here to support you every step of the way.
           </p>
         </section>
 
@@ -23,13 +23,13 @@ const AboutUsPage = () => {
           <div className="bg-primary/15 p-8 rounded-lg">
             <h3 className="md:text-2xl text-xl font-bold text-primary mb-4">Our Mission</h3>
             <p className="md:text-md text-sm mx-auto">
-              Our mission is to foster a collaborative environment where students can easily communicate, share knowledge, and support one another in their educational journeys. Starex Hub is designed to simplify learning, encourage community engagement, and provide tools that enhance productivity and learning outcomes.
+              Our mission is to foster a collaborative environment where students can easily communicate, share knowledge, and support one another in their educational journeys. StarX is designed to simplify learning, encourage community engagement, and provide tools that enhance productivity and learning outcomes.
             </p>
           </div>
           <div className="bg-primary/15 p-8 rounded-lg">
             <h3 className="md:text-2xl text-xl font-bold text-primary mb-4">Our Vision</h3>
             <p className="md:text-md text-sm mx-auto">
-              We envision a world where students are empowered through technology, making education more accessible, inclusive, and enjoyable. Starex Hub aims to be the go-to platform for student collaboration, enabling users to grow their knowledge, build networks, and achieve their academic goals.
+              We envision a world where students are empowered through technology, making education more accessible, inclusive, and enjoyable. StarX aims to be the go-to platform for student collaboration, enabling users to grow their knowledge, build networks, and achieve their academic goals.
             </p>
           </div>
         </section>

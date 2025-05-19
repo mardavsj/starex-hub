@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 const games = [
   {
     id: 1,
@@ -16,6 +18,11 @@ const games = [
 ];
 
 const GamesPage = () => {
+
+  useEffect(() => {
+    document.title = 'Our Games - Have a short Break at StarX ';
+  }, []);
+
   return (
     <div className="games-page mt-16 py-5 p-0 min-h-screen bg-primary/10">
       <h2 className="text-center text-3xl font-bold m-12">Our Games</h2>

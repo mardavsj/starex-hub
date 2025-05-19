@@ -38,7 +38,7 @@ const Footer = () => {
           </nav>
           <aside>
               <p className="text-base-content/60">
-                <span className="font-semibold">Starex Hub | </span>Copyright © {new Date().getFullYear()} - All right reserved by Starex University
+                <span className="font-semibold">StarX | </span>Copyright © {new Date().getFullYear()} - All right reserved by Starex University
               </p>
           </aside>
       </footer>
